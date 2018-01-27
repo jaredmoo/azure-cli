@@ -17,6 +17,9 @@ from ._util import (
     get_sql_elastic_pools_operations,
     get_sql_encryption_protectors_operations,
     get_sql_firewall_rules_operations,
+    get_sql_job_agents_operations,
+    get_sql_job_executions_operations,
+    get_sql_jobs_operations,
     get_sql_replication_links_operations,
     get_sql_restorable_dropped_databases_operations,
     get_sql_server_connection_policies_operations,
@@ -31,6 +34,38 @@ from ._validators import validate_subnet
 
 # pylint: disable=line-too-long,too-many-statements
 def load_command_table(self, _):
+    ###############################################
+    #                sql agent                    #
+    ###############################################
+    job_agents_operations = CliCommandType(
+        operations_tmpl='azure.mgmt.sql.operations.job_agents_operations#JobAgentsOperations.{}',
+        client_factory=get_sql_job_agents_operations)
+
+    with self.command_group('sql agent', job_agents_operations, client_factory=get_sql_job_agents_operations) as g:
+        g.command('list', 'list_by_server')
+        g.command('show', 'get')
+        g.custom_command('create', 'agent_create')
+        g.command('update', 'update')
+        g.command('delete', 'delete')
+
+    jobs_operations = CliCommandType(
+        operations_tmpl='azure.mgmt.sql.operations.jobs_operations#JobsOperations.{}',
+        client_factory=get_sql_jobs_operations)
+
+    with self.command_group('sql agent job', jobs_operations) as g:
+        g.command('list', 'list_by_agent')
+        g.command('show', 'get')
+        g.command('create', 'create_or_update')
+        g.command('delete', 'delete')
+
+    job_executions_operations = CliCommandType(
+        operations_tmpl='azure.mgmt.sql.operations.job_executions_operations#JobExecutionsOperations.{}',
+        client_factory=get_sql_job_executions_operations)
+
+    with self.command_group('sql agent ex', job_executions_operations) as g:
+        g.command('list', 'list_by_agent')
+
+
     ###############################################
     #                sql capabilities             #
     ###############################################

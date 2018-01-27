@@ -54,6 +54,44 @@ _DEFAULT_SERVER_VERSION = "12.0"
 
 
 ###############################################
+#                sql agent                    #
+###############################################
+
+
+# Creates an elastic pool. Wrapper function which uses the server location so that the user doesn't
+# need to specify location.
+def agent_create(
+        cmd,
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        database_name,
+        **kwargs):
+
+    # Determine server location
+    kwargs['location'] = _get_server_location(
+        cmd.cli_ctx,
+        server_name=server_name,
+        resource_group_name=resource_group_name)
+
+    # Build database id
+    kwargs['database_id'] = DatabaseIdentity(
+            cmd.cli_ctx,
+            database_name,
+            server_name,
+            resource_group_name
+        ).id()
+
+    # Create
+    return client.create_or_update(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        parameters=kwargs)
+
+
+###############################################
 #                sql db                       #
 ###############################################
 

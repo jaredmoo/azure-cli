@@ -64,6 +64,22 @@ def get_sql_encryption_protectors_operations(cli_ctx, _):
     return get_sql_management_client(cli_ctx).encryption_protectors
 
 
+def get_sql_jobs_operations(cli_ctx, _):
+    return get_sql_management_client(cli_ctx).jobs
+
+
+def get_sql_job_agents_operations(cli_ctx, _):
+    return get_sql_management_client(cli_ctx).job_agents
+
+
+def get_sql_job_credentials_operations(cli_ctx, _):
+    return get_sql_management_client(cli_ctx).job_credentials
+
+
+def get_sql_job_executions_operations(cli_ctx, _):
+    return get_sql_management_client(cli_ctx).job_executions
+
+
 def get_sql_firewall_rules_operations(cli_ctx, _):
     return get_sql_management_client(cli_ctx).firewall_rules
 

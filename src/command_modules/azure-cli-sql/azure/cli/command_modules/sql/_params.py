@@ -14,6 +14,7 @@ from azure.mgmt.sql.models.elastic_pool import ElasticPool
 from azure.mgmt.sql.models.import_extension_request \
     import ImportExtensionRequest
 from azure.mgmt.sql.models.export_request import ExportRequest
+from azure.mgmt.sql.models.job_agent import JobAgent
 from azure.mgmt.sql.models.server import Server
 from azure.mgmt.sql.models.server_azure_ad_administrator import ServerAzureADAdministrator
 from azure.mgmt.sql.models.sql_management_client_enums import (
@@ -78,11 +79,6 @@ class SizeWithUnitConverter(object):  # pylint: disable=too-few-public-methods
         return 'Size (in {}) - valid units are {}.'.format(
             self.unit,
             ', '.join(sorted(self.unit_map, key=self.unit_map.__getitem__)))
-
-
-###############################################
-#                sql db                       #
-###############################################
 
 
 class Engine(Enum):  # pylint: disable=too-few-public-methods
@@ -178,6 +174,47 @@ def load_arguments(self, _):
         c.argument('location_name', arg_type=get_location_type(self.cli_ctx))
         c.argument('usage_name', options_list=['--usage', '-u'])
 
+    ###############################################
+    #                sql agent                    #
+    ###############################################
+    with self.argument_context('sql agent') as c:
+        c.argument('server_name',
+                   arg_type=server_param_type,
+                   # Allow --ids command line argument. id_part=name is 1st name in uri
+                   id_part='name')
+
+        c.argument('job_agent_name',
+                   options_list=['--name', '-n'],
+                   help='Name of the Azure SQL Agent.',
+                   # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
+                   id_part='child_name_1')
+
+        c.argument('database_name',
+                   options_list=['--database-name', '-d'],
+                   help='Name of the Azure SQL Database.')
+
+    with self.argument_context('sql agent ex') as c:
+        c.argument('job_agent_name',
+                   options_list=['--agent', '-a'],
+                   help='Name of the Azure SQL Agent.',
+                   # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
+                   id_part='child_name_1')
+
+    with self.argument_context('sql agent job') as c:
+        c.argument('job_agent_name',
+                   options_list=['--agent', '-a'],
+                   help='Name of the Azure SQL Agent.',
+                   # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
+                   id_part='child_name_1')
+
+        c.argument('job_name',
+                   options_list=['--name', '-n'],
+                   # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
+                   id_part='child_name_2')
+
+    ###############################################
+    #                sql db                       #
+    ###############################################
     with self.argument_context('sql db') as c:
         c.argument('server_name',
                    arg_type=server_param_type,
