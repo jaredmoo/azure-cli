@@ -8,13 +8,17 @@ from enum import Enum
 
 from knack.arguments import CLIArgumentType, ignore_type
 
-from azure.cli.core.commands import patch_arg_make_required, patch_arg_make_optional
+from azure.cli.core.commands import (
+    patch_arg_make_optional,
+    patch_arg_make_required,
+    patch_arg_update_name)
 from azure.mgmt.sql.models.database import Database
 from azure.mgmt.sql.models.elastic_pool import ElasticPool
 from azure.mgmt.sql.models.import_extension_request \
     import ImportExtensionRequest
 from azure.mgmt.sql.models.export_request import ExportRequest
 from azure.mgmt.sql.models.job_agent import JobAgent
+from azure.mgmt.sql.models.job_step import JobStep
 from azure.mgmt.sql.models.server import Server
 from azure.mgmt.sql.models.server_azure_ad_administrator import ServerAzureADAdministrator
 from azure.mgmt.sql.models.sql_management_client_enums import (
@@ -193,6 +197,21 @@ def load_arguments(self, _):
                    options_list=['--database-name', '-d'],
                    help='Name of the Azure SQL Database.')
 
+    with self.argument_context('sql agent cred') as c:
+        c.argument('job_agent_name',
+                   options_list=['--agent', '-a'],
+                   help='Name of the Azure SQL Agent.',
+                   # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
+                   id_part='child_name_1')
+
+        c.argument('credential_name',
+                   options_list=['--name', '-n'],
+                   # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
+                   id_part='child_name_2')
+
+        c.argument('username', options_list=['--username', '-u'])
+        c.argument('password', options_list=['--password', '-p'])
+
     with self.argument_context('sql agent ex') as c:
         c.argument('job_agent_name',
                    options_list=['--agent', '-a'],
@@ -211,6 +230,22 @@ def load_arguments(self, _):
                    options_list=['--name', '-n'],
                    # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
                    id_part='child_name_2')
+
+    with self.argument_context('sql agent job step') as c:
+        c.argument('job_name',
+                   options_list=['--job', '-j'],
+                   # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
+                   id_part='child_name_2')
+
+        c.argument('step_name',
+                   options_list=['--name', '-n'],
+                   # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
+                   id_part='child_name_3')
+
+    with self.argument_context('sql agent job step create') as c:
+        c.expand('parameters', JobStep, patches={
+            'output': patch_arg_update_name('junk')
+        })
 
     ###############################################
     #                sql db                       #

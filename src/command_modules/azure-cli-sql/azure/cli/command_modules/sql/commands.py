@@ -18,7 +18,9 @@ from ._util import (
     get_sql_encryption_protectors_operations,
     get_sql_firewall_rules_operations,
     get_sql_job_agents_operations,
+    get_sql_job_credentials_operations,
     get_sql_job_executions_operations,
+    get_sql_job_steps_operations,
     get_sql_jobs_operations,
     get_sql_replication_links_operations,
     get_sql_restorable_dropped_databases_operations,
@@ -58,6 +60,16 @@ def load_command_table(self, _):
         g.command('create', 'create_or_update')
         g.command('delete', 'delete')
 
+    job_credentials_operations = CliCommandType(
+        operations_tmpl='azure.mgmt.sql.operations.job_credentials_operations#JobCredentialsOperations.{}',
+        client_factory=get_sql_job_credentials_operations)
+
+    with self.command_group('sql agent cred', job_credentials_operations) as g:
+        g.command('list', 'list_by_agent')
+        g.command('show', 'get')
+        g.command('create', 'create_or_update')
+        g.command('delete', 'delete')
+
     job_executions_operations = CliCommandType(
         operations_tmpl='azure.mgmt.sql.operations.job_executions_operations#JobExecutionsOperations.{}',
         client_factory=get_sql_job_executions_operations)
@@ -65,6 +77,15 @@ def load_command_table(self, _):
     with self.command_group('sql agent ex', job_executions_operations) as g:
         g.command('list', 'list_by_agent')
 
+    job_steps_operations = CliCommandType(
+        operations_tmpl='azure.mgmt.sql.operations.job_steps_operations#JobStepsOperations.{}',
+        client_factory=get_sql_job_steps_operations)
+
+    with self.command_group('sql agent job step', job_steps_operations) as g:
+        g.command('list', 'list_by_job')
+        g.command('show', 'get')
+        g.command('create', 'create_or_update')
+        g.command('delete', 'delete')
 
     ###############################################
     #                sql capabilities             #
