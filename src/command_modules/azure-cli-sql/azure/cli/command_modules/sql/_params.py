@@ -10,8 +10,7 @@ from knack.arguments import CLIArgumentType, ignore_type
 
 from azure.cli.core.commands import (
     patch_arg_make_optional,
-    patch_arg_make_required,
-    patch_arg_update_name)
+    patch_arg_make_required)
 from azure.mgmt.sql.models.database import Database
 from azure.mgmt.sql.models.elastic_pool import ElasticPool
 from azure.mgmt.sql.models.import_extension_request \
@@ -243,9 +242,20 @@ def load_arguments(self, _):
                    id_part='child_name_3')
 
     with self.argument_context('sql agent job step create') as c:
-        c.expand('parameters', JobStep, patches={
-            'output': patch_arg_update_name('junk')
-        })
+        # c.expand('parameters', JobStep)
+        pass
+
+    with self.argument_context('sql agent target-group') as c:
+        c.argument('job_agent_name',
+                   options_list=['--agent', '-a'],
+                   help='Name of the Azure SQL Agent.',
+                   # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
+                   id_part='child_name_1')
+
+        c.argument('target_group_name',
+                   options_list=['--name', '-n'],
+                   # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
+                   id_part='child_name_2')
 
     ###############################################
     #                sql db                       #

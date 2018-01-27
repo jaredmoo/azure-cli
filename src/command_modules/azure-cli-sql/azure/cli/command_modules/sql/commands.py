@@ -21,6 +21,7 @@ from ._util import (
     get_sql_job_credentials_operations,
     get_sql_job_executions_operations,
     get_sql_job_steps_operations,
+    get_sql_job_target_groups_operations,
     get_sql_jobs_operations,
     get_sql_replication_links_operations,
     get_sql_restorable_dropped_databases_operations,
@@ -47,7 +48,7 @@ def load_command_table(self, _):
         g.command('list', 'list_by_server')
         g.command('show', 'get')
         g.custom_command('create', 'agent_create')
-        g.command('update', 'update')
+        g.generic_update_command('update')
         g.command('delete', 'delete')
 
     jobs_operations = CliCommandType(
@@ -58,6 +59,7 @@ def load_command_table(self, _):
         g.command('list', 'list_by_agent')
         g.command('show', 'get')
         g.command('create', 'create_or_update')
+        g.generic_update_command('update')
         g.command('delete', 'delete')
 
     job_credentials_operations = CliCommandType(
@@ -68,6 +70,7 @@ def load_command_table(self, _):
         g.command('list', 'list_by_agent')
         g.command('show', 'get')
         g.command('create', 'create_or_update')
+        g.generic_update_command('update')
         g.command('delete', 'delete')
 
     job_executions_operations = CliCommandType(
@@ -85,6 +88,18 @@ def load_command_table(self, _):
         g.command('list', 'list_by_job')
         g.command('show', 'get')
         g.command('create', 'create_or_update')
+        g.generic_update_command('update')
+        g.command('delete', 'delete')
+
+    job_target_groups_operations = CliCommandType(
+        operations_tmpl='azure.mgmt.sql.operations.job_target_groups_operations#JobTargetGroupsOperations.{}',
+        client_factory=get_sql_job_target_groups_operations)
+
+    with self.command_group('sql agent target-group', job_target_groups_operations) as g:
+        g.command('list', 'list_by_agent')
+        g.command('show', 'get')
+        g.command('create', 'create_or_update')
+        g.generic_update_command('update')
         g.command('delete', 'delete')
 
     ###############################################

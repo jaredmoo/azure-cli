@@ -84,6 +84,10 @@ def get_sql_job_steps_operations(cli_ctx, _):
     return get_sql_management_client(cli_ctx).job_steps
 
 
+def get_sql_job_target_groups_operations(cli_ctx, _):
+    return get_sql_management_client(cli_ctx).job_target_groups
+
+
 def get_sql_firewall_rules_operations(cli_ctx, _):
     return get_sql_management_client(cli_ctx).firewall_rules
 
