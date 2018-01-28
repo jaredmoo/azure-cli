@@ -153,7 +153,7 @@ def job_create(
     schedule.start_time = start_time
     schedule.end_time = end_time
     schedule.enabled = enabled
-    schedule.interval = final_interval
+    schedule.interval = final_interval.value
     if schedule.interval:
         schedule.type = JobScheduleType.recurring.value
 

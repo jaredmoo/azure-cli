@@ -233,11 +233,15 @@ def load_arguments(self, _):
                    id_part='child_name_2')
 
     with self.argument_context('sql agent job create') as c:
+        c.argument('description',
+                   help='User-defined description of the job.')
+
         c.expand('schedule', JobSchedule)
 
         schedule_arg_group = 'Schedule'
 
         c.argument('enabled',
+                   help='Whether scheduled execution of this job is enabled.',
                    arg_group=schedule_arg_group,
                    arg_type=get_three_state_flag())
 
@@ -249,16 +253,22 @@ def load_arguments(self, _):
         schedule_interval_arg_group = 'Schedule Interval'
 
         c.argument('interval',
+                   help='Interval in ISO8601 duration format, e.g. "P1M" (1 month), "P2W" (2 weeks), "P3D" (3 days), "PT4H" (4 hours), or "PT5M" (5 minutes).',
                    arg_group=schedule_interval_arg_group)
         c.argument('months',
+                   help='Interval in months.',
                    arg_group=schedule_interval_arg_group)
         c.argument('weeks',
+                   help='Interval in weeks.',
                    arg_group=schedule_interval_arg_group)
         c.argument('days',
+                   help='Interval in days.',
                    arg_group=schedule_interval_arg_group)
         c.argument('hours',
+                   help='Interval in hours.',
                    arg_group=schedule_interval_arg_group)
         c.argument('minutes',
+                   help='Interval in minutes.',
                    arg_group=schedule_interval_arg_group)
 
     with self.argument_context('sql agent job step') as c:
