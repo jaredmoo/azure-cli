@@ -98,6 +98,23 @@ def agent_create(
         parameters=kwargs)
 
 
+class SettableOnceValue:
+    def __init__(self, value_name):
+        self.value_name = value_name
+        self.value = None
+        self._setter_name = None
+
+    def set(self, value, setter_name):
+        if self.value:
+            raise CLIError(
+                "Cannot set {} to '{}' with argument '{}' because it was already set to '{}' by argument '{}'"
+                .format(self.value_name,
+                        value, setter_name,
+                        self.value, self._setter_name))
+        self.value = value
+        self._setter_name = setter_name
+
+
 def job_create(
         cmd,
         client,
@@ -117,25 +134,20 @@ def job_create(
         minutes=None,
         **kwargs):
 
-    interval_arg_name = 'interval'
-    def _set_interval(format, value, arg_name):
-        nonlocal interval
-        nonlocal interval_arg_name
-        if interval:
-            raise CLIError("Cannot set schedule interval with argument '{}' because it was already set by argument '{}'".format(arg_name, interval_arg_name))
-        interval = format.format(value)
-        interval_arg_name = arg_name
+    i = SettableOnceValue('interval')
 
+    if interval:
+        i.set(interval, 'interval')
     if months:
-        _set_interval('P{}M', months, 'months')
+        i.set('P{}M'.format(months), 'months')
     if weeks:
-        _set_interval('P{}W', weeks, 'weeks')
+        i.set('P{}W'.format(weeks), 'weeks')
     if days:
-        _set_interval('P{}D', days, 'days')
+        i.set('P{}D'.format(days), 'days')
     if hours:
-        _set_interval('PT{}H', hours, 'hours')
+        i.set('PT{}H'.format(hours), 'hours')
     if minutes:
-        _set_interval('PT{}M', minutes, 'minutes')
+        i.set('PT{}M'.format(minutes), 'minutes')
 
     schedule = JobSchedule()
     schedule.start_time = start_time
