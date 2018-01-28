@@ -17,6 +17,7 @@ from azure.mgmt.sql.models.import_extension_request \
     import ImportExtensionRequest
 from azure.mgmt.sql.models.export_request import ExportRequest
 from azure.mgmt.sql.models.job_agent import JobAgent
+from azure.mgmt.sql.models.job_schedule import JobSchedule
 from azure.mgmt.sql.models.job_step import JobStep
 from azure.mgmt.sql.models.server import Server
 from azure.mgmt.sql.models.server_azure_ad_administrator import ServerAzureADAdministrator
@@ -24,6 +25,7 @@ from azure.mgmt.sql.models.sql_management_client_enums import (
     AuthenticationType,
     BlobAuditingPolicyState,
     CreateMode,
+    JobScheduleType,
     SecurityAlertPolicyState,
     SecurityAlertPolicyEmailAccountAdmins,
     ServerConnectionType,
@@ -230,6 +232,35 @@ def load_arguments(self, _):
                    # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
                    id_part='child_name_2')
 
+    with self.argument_context('sql agent job create') as c:
+        c.expand('schedule', JobSchedule)
+
+        schedule_arg_group = 'Schedule'
+
+        c.argument('enabled',
+                   arg_group=schedule_arg_group,
+                   arg_type=get_three_state_flag())
+
+        c.ignore('type')
+
+        c.argument('start_time', arg_group=schedule_arg_group)
+        c.argument('end_time', arg_group=schedule_arg_group)
+
+        schedule_interval_arg_group = 'Schedule Interval'
+
+        c.argument('interval',
+                   arg_group=schedule_interval_arg_group)
+        c.argument('months',
+                   arg_group=schedule_interval_arg_group)
+        c.argument('weeks',
+                   arg_group=schedule_interval_arg_group)
+        c.argument('days',
+                   arg_group=schedule_interval_arg_group)
+        c.argument('hours',
+                   arg_group=schedule_interval_arg_group)
+        c.argument('minutes',
+                   arg_group=schedule_interval_arg_group)
+
     with self.argument_context('sql agent job step') as c:
         c.argument('job_name',
                    options_list=['--job', '-j'],
@@ -258,6 +289,8 @@ def load_arguments(self, _):
                    options_list=['--name', '-n'],
                    # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
                    id_part='child_name_2')
+
+        c.ignore('members')
 
     ###############################################
     #                sql db                       #

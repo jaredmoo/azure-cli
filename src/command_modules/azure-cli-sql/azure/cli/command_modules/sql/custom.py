@@ -15,6 +15,10 @@ from azure.cli.core.commands.client_factory import (
     get_mgmt_service_client,
     get_subscription_id)
 from azure.cli.core.util import CLIError
+from azure.mgmt.sql.models.job import Job
+from azure.mgmt.sql.models.job_schedule import JobSchedule
+from azure.mgmt.sql.models.job_target_group import JobTargetGroup
+from azure.mgmt.sql.models.job_target import JobTarget
 from azure.mgmt.sql.models.server_key import ServerKey
 from azure.mgmt.sql.models.encryption_protector import EncryptionProtector
 from azure.mgmt.sql.models.resource_identity import ResourceIdentity
@@ -23,6 +27,9 @@ from azure.mgmt.sql.models.sql_management_client_enums import (
     CreateMode,
     DatabaseEdition,
     IdentityType,
+    JobScheduleType,
+    JobTargetGroupMembershipType,
+    JobTargetType,
     ReplicationRole,
     SecurityAlertPolicyState,
     ServerKeyType,
@@ -91,6 +98,63 @@ def agent_create(
         parameters=kwargs)
 
 
+def job_create(
+        cmd,
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        job_name,
+        description=None,
+        enabled=None,
+        start_time=None,
+        end_time=None,
+        interval=None,
+        months=None,
+        weeks=None,
+        days=None,
+        hours=None,
+        minutes=None,
+        **kwargs):
+
+    interval_arg_name = 'interval'
+    def _set_interval(format, value, arg_name):
+        nonlocal interval
+        nonlocal interval_arg_name
+        if interval:
+            raise CLIError("Cannot set schedule interval with argument '{}' because it was already set by argument '{}'".format(arg_name, interval_arg_name))
+        interval = format.format(value)
+        interval_arg_name = arg_name
+
+    if months:
+        _set_interval('P{}M', months, 'months')
+    if weeks:
+        _set_interval('P{}W', weeks, 'weeks')
+    if days:
+        _set_interval('P{}D', days, 'days')
+    if hours:
+        _set_interval('PT{}H', hours, 'hours')
+    if minutes:
+        _set_interval('PT{}M', minutes, 'minutes')
+
+    schedule = JobSchedule()
+    schedule.start_time = start_time
+    schedule.end_time = end_time
+    schedule.enabled = enabled
+    schedule.interval = interval
+    if interval:
+        schedule.type = JobScheduleType.recurring.value
+
+    return client.create_or_update(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        job_name=job_name,
+        description=description,
+        schedule=schedule
+    )
+
+
 def job_step_list(
         cmd,
         client,
@@ -140,6 +204,61 @@ def job_step_get(
             job_agent_name=job_agent_name,
             job_name=job_name,
             step_name=step_name)
+
+
+def job_target_group_create(
+        cmd,
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        target_group_name):
+
+    return client.create_or_update(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        target_group_name=target_group_name,
+        parameters=JobTargetGroup(members=[])
+    )
+
+
+def job_target_group_add_sql_db(
+        cmd,
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        target_group_name,
+        target_server_name,
+        target_database_name,
+        exclude=False):
+
+    target_group = client.get(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        target_group_name=target_group_name
+    )
+
+    target = JobTarget(
+        type=JobTargetType.sql_database,
+        server_name=target_server_name,
+        database_name=target_database_name,
+        membership_type=JobTargetGroupMembershipType.include
+            if not exclude
+            else JobTargetGroupMembershipType.exclude
+    )
+
+    target_group.members += [target]
+
+    return client.create_or_update(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        target_group_name=target_group_name,
+        parameters=target_group
+    )
 
 ###############################################
 #                sql db                       #
