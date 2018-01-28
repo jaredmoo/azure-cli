@@ -241,9 +241,11 @@ def load_arguments(self, _):
                    # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
                    id_part='child_name_3')
 
+        c.argument('job_version',
+                   options_list=['--version', '-v'])
+
     with self.argument_context('sql agent job step create') as c:
-        # c.expand('parameters', JobStep)
-        pass
+        c.expand('parameters', JobStep)
 
     with self.argument_context('sql agent target-group') as c:
         c.argument('job_agent_name',

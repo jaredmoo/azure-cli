@@ -55,7 +55,7 @@ def load_command_table(self, _):
         operations_tmpl='azure.mgmt.sql.operations.jobs_operations#JobsOperations.{}',
         client_factory=get_sql_jobs_operations)
 
-    with self.command_group('sql agent job', jobs_operations) as g:
+    with self.command_group('sql agent job', jobs_operations, client_factory=get_sql_job_agents_operations) as g:
         g.command('list', 'list_by_agent')
         g.command('show', 'get')
         g.command('create', 'create_or_update')
@@ -66,7 +66,7 @@ def load_command_table(self, _):
         operations_tmpl='azure.mgmt.sql.operations.job_credentials_operations#JobCredentialsOperations.{}',
         client_factory=get_sql_job_credentials_operations)
 
-    with self.command_group('sql agent cred', job_credentials_operations) as g:
+    with self.command_group('sql agent cred', job_credentials_operations, client_factory=get_sql_job_agents_operations) as g:
         g.command('list', 'list_by_agent')
         g.command('show', 'get')
         g.command('create', 'create_or_update')
@@ -77,15 +77,15 @@ def load_command_table(self, _):
         operations_tmpl='azure.mgmt.sql.operations.job_executions_operations#JobExecutionsOperations.{}',
         client_factory=get_sql_job_executions_operations)
 
-    with self.command_group('sql agent ex', job_executions_operations) as g:
+    with self.command_group('sql agent ex', job_executions_operations, client_factory=get_sql_job_agents_operations) as g:
         g.command('list', 'list_by_agent')
 
     job_steps_operations = CliCommandType(
         operations_tmpl='azure.mgmt.sql.operations.job_steps_operations#JobStepsOperations.{}',
         client_factory=get_sql_job_steps_operations)
 
-    with self.command_group('sql agent job step', job_steps_operations) as g:
-        g.command('list', 'list_by_job')
+    with self.command_group('sql agent job step', job_steps_operations, client_factory=get_sql_job_agents_operations) as g:
+        g.custom_command('list', 'job_step_list')
         g.command('show', 'get')
         g.command('create', 'create_or_update')
         g.generic_update_command('update')
@@ -95,7 +95,7 @@ def load_command_table(self, _):
         operations_tmpl='azure.mgmt.sql.operations.job_target_groups_operations#JobTargetGroupsOperations.{}',
         client_factory=get_sql_job_target_groups_operations)
 
-    with self.command_group('sql agent target-group', job_target_groups_operations) as g:
+    with self.command_group('sql agent target-group', job_target_groups_operations, client_factory=get_sql_job_agents_operations) as g:
         g.command('list', 'list_by_agent')
         g.command('show', 'get')
         g.command('create', 'create_or_update')

@@ -91,6 +91,56 @@ def agent_create(
         parameters=kwargs)
 
 
+def job_step_list(
+        cmd,
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        job_name,
+        job_version=None):
+
+    if job_version:
+        return client.list_by_version(
+            server_name=server_name,
+            resource_group_name=resource_group_name,
+            job_agent_name=job_agent_name,
+            job_name=job_name,
+            job_version=job_version)
+    else:
+        return client.list_by_server(
+            server_name=server_name,
+            resource_group_name=resource_group_name,
+            job_agent_name=job_agent_name,
+            job_name=job_name)
+
+
+def job_step_get(
+        cmd,
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        job_name,
+        step_name,
+        job_version=None):
+
+    if job_version:
+        return client.get_by_version(
+            server_name=server_name,
+            resource_group_name=resource_group_name,
+            job_agent_name=job_agent_name,
+            job_name=job_name,
+            step_name=step_name,
+            job_version=job_version)
+    else:
+        return client.get(
+            server_name=server_name,
+            resource_group_name=resource_group_name,
+            job_agent_name=job_agent_name,
+            job_name=job_name,
+            step_name=step_name)
+
 ###############################################
 #                sql db                       #
 ###############################################
