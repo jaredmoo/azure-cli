@@ -134,27 +134,27 @@ def job_create(
         minutes=None,
         **kwargs):
 
-    i = SettableOnceValue('interval')
+    final_interval = SettableOnceValue('interval')
 
     if interval:
-        i.set(interval, 'interval')
+        final_interval.set(interval, 'interval')
     if months:
-        i.set('P{}M'.format(months), 'months')
+        final_interval.set('P{}M'.format(months), 'months')
     if weeks:
-        i.set('P{}W'.format(weeks), 'weeks')
+        final_interval.set('P{}W'.format(weeks), 'weeks')
     if days:
-        i.set('P{}D'.format(days), 'days')
+        final_interval.set('P{}D'.format(days), 'days')
     if hours:
-        i.set('PT{}H'.format(hours), 'hours')
+        final_interval.set('PT{}H'.format(hours), 'hours')
     if minutes:
-        i.set('PT{}M'.format(minutes), 'minutes')
+        final_interval.set('PT{}M'.format(minutes), 'minutes')
 
     schedule = JobSchedule()
     schedule.start_time = start_time
     schedule.end_time = end_time
     schedule.enabled = enabled
-    schedule.interval = interval
-    if interval:
+    schedule.interval = final_interval
+    if schedule.interval:
         schedule.type = JobScheduleType.recurring.value
 
     return client.create_or_update(
