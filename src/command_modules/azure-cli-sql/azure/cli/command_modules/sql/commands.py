@@ -99,7 +99,6 @@ def load_command_table(self, _):
         g.command('list', 'list_by_agent')
         g.command('show', 'get')
         g.custom_command('create', 'job_target_group_create')
-        g.custom_command('add-sql-db', 'job_target_group_add_sql_db')
         g.generic_update_command('update')
         g.command('delete', 'delete')
 

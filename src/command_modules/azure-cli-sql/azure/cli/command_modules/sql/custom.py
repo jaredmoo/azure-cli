@@ -399,43 +399,6 @@ def job_target_group_create(
         members=members)
 
 
-def job_target_group_add_sql_db(
-        cmd,
-        client,
-        server_name,
-        resource_group_name,
-        job_agent_name,
-        target_group_name,
-        target_server_name,
-        target_database_name,
-        exclude=False):
-
-    target_group = client.get(
-        server_name=server_name,
-        resource_group_name=resource_group_name,
-        job_agent_name=job_agent_name,
-        target_group_name=target_group_name
-    )
-
-    target = JobTarget(
-        type=JobTargetType.sql_database,
-        server_name=target_server_name,
-        database_name=target_database_name,
-        membership_type=JobTargetGroupMembershipType.include
-            if not exclude
-            else JobTargetGroupMembershipType.exclude
-    )
-
-    target_group.members += [target]
-
-    return client.create_or_update(
-        server_name=server_name,
-        resource_group_name=resource_group_name,
-        job_agent_name=job_agent_name,
-        target_group_name=target_group_name,
-        parameters=target_group
-    )
-
 ###############################################
 #                sql db                       #
 ###############################################
