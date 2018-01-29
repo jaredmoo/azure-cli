@@ -38,10 +38,13 @@ from azure.mgmt.sql.models.sql_management_client_enums import (
 )
 from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.storage import StorageManagementClient
+from knack.log import get_logger
 
 from ._util import (
     get_sql_servers_operations
 )
+
+logger = get_logger(__name__)
 
 ###############################################
 #                Common funcs                 #
@@ -247,66 +250,52 @@ def job_step_get(
 
 
 def _parse_optional_membership_type(s):
+    logger.debug('_parse_optional_membership_type: %s', s)
+
     token = '~'
     (prefix, x, suffix) = s.partition(token)
-    if prefix == '' and exclude == token:
+    if prefix == '' and x == token:
         return (JobTargetGroupMembershipType.exclude.value, suffix)
     else:
         return (JobTargetGroupMembershipType.include.value, s)
 
 
-def _parse_segments_and_credential(s, count):
-    _parse_log('_parse_segments_and_credential', s)
+def _parse_segments_and_credential(s):
+    logger.debug('_parse_segments_and_credential: %s', s)
 
     (prefix, x, suffix) = s.partition('(')
-    (segments, s) = _parse_segments(prefix, count)
+    segments = _parse_segments(prefix)
     (credential, s) = _parse_credential(suffix)
     return (segments, credential, s)
 
 
-def _parse_segments(s, count):
-    _parse_log('_parse_segments', s)
+def _parse_segments(s):
+    logger.debug('_parse_segments: %s', s)
 
     segments = []
-    for i in range(count):
-        (segment, s) = _parse_segment(s)
-        segments += [segment]
-    return (segments, s)
+    while s:
+        (prefix, x, suffix) = s.partition('.')
+        segments += [prefix]
+        s = suffix
 
-
-def _parse_segment(s):
-    _parse_log('_parse_segment', s)
-
-    (prefix, x, suffix) = s.partition('.')
-    if not prefix:
-        raise CLIError('_parse_segment error: {}'.format(s))
-    return (prefix, suffix)
+    return segments
 
 
 def _parse_credential(s):
-    _parse_log('_parse_credential', s)
+    logger.debug('_parse_credential: %s', s)
 
     (prefix, exclude, suffix) = s.partition(')')
     return (prefix, suffix)
 
 
-def _parse_end(s):
-    _parse_log('_parse_end', s)
-
-    if s:
-        raise CLIError('_parse_end error: {}'.format(s))
-
-
-def _parse_log(f, s):
-    print(f, ":", s)
-
-
 def _job_target_db_parse(s):
-    _parse_log('_job_target_db_parse', s)
+    logger.debug('_job_target_db_parse: %s', s)
 
     (membership_type, s) = _parse_optional_membership_type(s)
     (segments, s) = _parse_segments(s, 2)
-    _parse_end(s)
+
+    if len(segments != 2) or s:
+        raise CLIError('Invalid db')
 
     t = JobTarget(JobTargetType.sql_database.value)
     t.membership_type = membership_type
@@ -317,10 +306,12 @@ def _job_target_db_parse(s):
 
 
 def _job_target_server_parse(job_agent_id, s):
-    _parse_log('_job_target_server_parse', s)
+    logger.debug('_job_target_server_parse: %s', s)
 
-    (segments, credential_name, s) = _parse_segments_and_credential(s, 1)
-    _parse_end(s)
+    (segments, credential_name, s) = _parse_segments_and_credential(s)
+
+    if len(segments != 1) or not credential_name or s:
+        raise CLIError('Invalid server')
 
     t = JobTarget(JobTargetType.sql_server.value)
     t.server_name = segments[0]
@@ -330,10 +321,13 @@ def _job_target_server_parse(job_agent_id, s):
 
 
 def _job_target_pool_parse(job_agent_id, pool):
-    _parse_log('_job_target_pool_parse', s)
+    logger.debug('_job_target_pool_parse: %s', s)
 
     (membership_type, s) = _parse_optional_membership_type(s)
-    (segments, credential_name, s) = _parse_segments_and_credential(s, 2)
+    (segments, credential_name, s) = _parse_segments_and_credential(s)
+
+    if len(segments != 2) or not credential_name or s:
+        raise CLIError('Invalid pool')
 
     t = JobTarget(JobTargetType.sql_elastic_pool.value)
     t.membership_type = _membership_type
@@ -345,9 +339,12 @@ def _job_target_pool_parse(job_agent_id, pool):
 
 
 def _job_target_shard_map_parse(job_agent_id, s):
-    _parse_log('_job_target_shard_map_parse', s)
+    logger.debug('_job_target_shard_map_parse: %s', s)
 
-    (segments, credential_name, s) = _parse_segments_and_credential(s, 3)
+    (segments, credential_name, s) = _parse_segments_and_credential(s)
+
+    if len(segments != 3) or not credential_name or s:
+        raise CLIError('Invalid shard map')
 
     t = JobTarget(JobTargetType.sql_shard_map.value)
     t.server_name = segments[0]
