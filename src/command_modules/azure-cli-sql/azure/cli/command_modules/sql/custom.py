@@ -246,6 +246,35 @@ def job_step_get(
             step_name=step_name)
 
 
+def _parse_optional_membership_type(s):
+    (prefix, exclude, suffix) = s.partition('-')
+    if prefix == '' and exclude == '-':
+        return (JobTargetGroupMembershipType.exclude.value, suffix)
+    else:
+        return (JobTargetGroupMembershipType.include.value, suffix)
+
+
+def _parse_segment(s):
+    (prefix, exclude, suffix) = s.partition('.')
+    if not prefix:
+        raise CLIError('blarg!')
+    return (prefix, suffix)
+
+
+def _parse_open_paren(s):
+    (prefix, exclude, suffix) = s.partition('(')
+    if not prefix:
+        raise CLIError('blarg! (')
+    return (prefix, suffix)
+
+
+def _parse_close_paren(s):
+    (prefix, exclude, suffix) = s.partition(')')
+    if not prefix:
+        raise CLIError('blarg! ')
+    return (prefix, suffix)
+
+
 def _membership_type(s):
     return (JobTargetGroupMembershipType.exclude.value if s
         else JobTargetGroupMembershipType.include.value)
