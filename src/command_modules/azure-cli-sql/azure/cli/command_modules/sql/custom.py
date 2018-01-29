@@ -252,10 +252,8 @@ def job_step_get(
 def _parse_optional_membership_type(s):
     logger.debug('_parse_optional_membership_type: %s', s)
 
-    token = '~'
-    (prefix, x, suffix) = s.partition(token)
-    if prefix == '' and x == token:
-        return (JobTargetGroupMembershipType.exclude.value, suffix)
+    if len(s) > 1 and s[0] == '~':
+        return (JobTargetGroupMembershipType.exclude.value, s[1:])
     else:
         return (JobTargetGroupMembershipType.include.value, s)
 
@@ -263,21 +261,22 @@ def _parse_optional_membership_type(s):
 def _parse_segments_and_credential(s):
     logger.debug('_parse_segments_and_credential: %s', s)
 
-    (prefix, x, suffix) = s.partition('(')
-    segments = _parse_segments(prefix)
-    (credential, s) = _parse_credential(suffix)
+    (segments, s) = _parse_segments(s)
+    (credential, s) = _parse_credential(s)
     return (segments, credential, s)
 
 
 def _parse_segments(s):
     logger.debug('_parse_segments: %s', s)
 
+    (prefix, x, suffix) = s.partition('(')
+
     segments = []
-    while s:
-        (segment, s) = _parse_segment(s)
+    while prefix:
+        (segment, prefix) = _parse_segment(prefix)
         segments += [segment]
 
-    return segments
+    return (segments, suffix)
 
 
 def _parse_segment(s):
@@ -298,10 +297,10 @@ def _job_target_db_parse(s):
     logger.debug('_job_target_db_parse input: %s', s)
 
     (membership_type, s) = _parse_optional_membership_type(s)
-    segments = _parse_segments(s)
+    (segments, s) = _parse_segments(s)
 
     logger.debug('_job_target_db_parse outcome: %s %s', membership_type, segments)
-    if len(segments) != 2:
+    if len(segments) != 2 or s:
         raise CLIError('Invalid db')
 
     t = JobTarget(JobTargetType.sql_database.value)
