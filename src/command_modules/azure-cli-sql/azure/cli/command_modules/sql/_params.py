@@ -50,7 +50,16 @@ from .custom import (
 
 server_param_type = CLIArgumentType(
     options_list=['--server', '-s'],
-    help='Name of the Azure SQL server.')
+    configured_default='sql-server',
+    help='Name of the Azure SQL server. You can configure the default server using `az configure --defaults sql-server=<name>`')
+
+job_agent_param_type = CLIArgumentType(
+    options_list=['--agent', '-a'],
+    configured_default='sql-agent',
+    help='Name of the Azure SQL Agent. You can configure the default agent using `az configure --defaults sql-agent=<name>`',
+    # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
+    id_part='child_name_1')
+
 
 #####
 #        SizeWithUnitConverter - consider moving to common code (azure.cli.core.commands.parameters)
@@ -199,11 +208,7 @@ def load_arguments(self, _):
                    help='Name of the Azure SQL Database.')
 
     with self.argument_context('sql agent cred') as c:
-        c.argument('job_agent_name',
-                   options_list=['--agent', '-a'],
-                   help='Name of the Azure SQL Agent.',
-                   # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
-                   id_part='child_name_1')
+        c.argument('job_agent_name', type=job_agent_param_type)
 
         c.argument('credential_name',
                    options_list=['--name', '-n'],
@@ -214,18 +219,10 @@ def load_arguments(self, _):
         c.argument('password', options_list=['--password', '-p'])
 
     with self.argument_context('sql agent ex') as c:
-        c.argument('job_agent_name',
-                   options_list=['--agent', '-a'],
-                   help='Name of the Azure SQL Agent.',
-                   # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
-                   id_part='child_name_1')
+        c.argument('job_agent_name', job_agent_param_type)
 
     with self.argument_context('sql agent job') as c:
-        c.argument('job_agent_name',
-                   options_list=['--agent', '-a'],
-                   help='Name of the Azure SQL Agent.',
-                   # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
-                   id_part='child_name_1')
+        c.argument('job_agent_name', job_agent_param_type)
 
         c.argument('job_name',
                    options_list=['--name', '-n'],
@@ -289,11 +286,7 @@ def load_arguments(self, _):
         c.expand('parameters', JobStep)
 
     with self.argument_context('sql agent target-group') as c:
-        c.argument('job_agent_name',
-                   options_list=['--agent', '-a'],
-                   help='Name of the Azure SQL Agent.',
-                   # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
-                   id_part='child_name_1')
+        c.argument('job_agent_name', job_agent_param_type)
 
         c.argument('target_group_name',
                    options_list=['--name', '-n'],
@@ -303,16 +296,16 @@ def load_arguments(self, _):
         c.ignore('members')
 
     with self.argument_context('sql agent target-group create') as c:
-        c.argument('target_db',
+        c.argument('target_sql_db',
                    nargs='+')
 
-        c.argument('target_server',
+        c.argument('target_sql_server',
                    nargs='+')
 
-        c.argument('target_pool',
+        c.argument('target_sql_elastic_pool',
                    nargs='+')
 
-        c.argument('target_shard_map',
+        c.argument('target_sql_shard_map',
                    nargs='+')
 
     ###############################################
