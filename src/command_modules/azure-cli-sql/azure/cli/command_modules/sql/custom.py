@@ -65,7 +65,35 @@ _DEFAULT_SERVER_VERSION = "12.0"
 ###############################################
 
 
-# Creates an elastic pool. Wrapper function which uses the server location so that the user doesn't
+# Helper class to bundle up agent identity properties
+class JobAgentIdentity(object):  # pylint: disable=too-few-public-methods
+    def __init__(self, cli_ctx, job_agent_name, server_name, resource_group_name):
+        self.job_agent_name = job_agent_name
+        self.server_name = server_name
+        self.resource_group_name = resource_group_name
+        self.cli_ctx = cli_ctx
+
+    def id(self):
+        return '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Sql/servers/{}/jobAgents/{}'.format(
+            quote(get_subscription_id(self.cli_ctx)),
+            quote(self.resource_group_name),
+            quote(self.server_name),
+            quote(self.job_agent_name))
+
+
+# Helper class to bundle up credential identity properties
+class JobCredentialIdentity(object):  # pylint: disable=too-few-public-methods
+    def __init__(self, job_agent_id, credential_name):
+        self.job_agent_id = job_agent_id
+        self.credential_name = credential_name
+
+    def id(self):
+        return '{}/credentials/{}'.format(
+            quote(self.job_agent_id),
+            quote(self.credential_name))
+
+
+# Creates an agent. Wrapper function which uses the server location so that the user doesn't
 # need to specify location.
 def agent_create(
         cmd,
@@ -218,21 +246,120 @@ def job_step_get(
             step_name=step_name)
 
 
+def _membership_type(s):
+    return (JobTargetGroupMembershipType.exclude.value if s
+        else JobTargetGroupMembershipType.include.value)
+
+
+def _job_target_db_parse(db):
+    m = re.match('^([~]?)([^\.]*)\.(.*)$', db)
+    if not m:
+        raise CLIError(
+            "Invalid sql db identifier '{}'. Sql db identifiers must match the format 'server_name.db_name' to include or '~server_name.db_name' to exclude."
+            .format(db))
+
+    g = m.groups()
+
+    t = JobTarget(JobTargetType.sql_database.value)
+    t.membership_type = _membership_type(g[0])
+    t.server_name = g[1]
+    t.database_name = g[2]
+
+    return t
+
+
+def _job_target_server_parse(
+        job_agent_id,
+        server):
+    m = re.match('^([^\.]*)\((.*)\)$', server)
+    if not m:
+        raise CLIError(
+            "Invalid sql server identifier '{}'. Sql server identifiers must match the format 'server_name(refresh_cred_name)'."
+            .format(server))
+
+    g = m.groups()
+
+    t = JobTarget(JobTargetType.sql_server.value)
+    t.server_name = g[0]
+    t.refresh_credential = JobCredentialIdentity(job_agent_id, g[1]).id()
+
+    return t
+
+
+def _job_target_pool_parse(
+        job_agent_id,
+        pool):
+    m = re.match('^([~]?)([^\.]*)\.([^\.]*)\((.*)\)$', pool)
+    if not m:
+        raise CLIError(
+            "Invalid sql elastic pool identifier '{}'. Sql elastic pool identifiers must match the format 'server_name.pool_name(refresh_cred_name)'."
+            .format(server))
+
+    g = m.groups()
+
+    t = JobTarget(JobTargetType.sql_elastic_pool.value)
+    t.membership_type = _membership_type(g[0])
+    t.server_name = g[1]
+    t.elastic_pool_name = g[2]
+    t.refresh_credential = JobCredentialIdentity(job_agent_id, g[3]).id()
+
+    return t
+
+
+def _job_target_shard_map_parse(
+        job_agent_id,
+        shard_map):
+    m = re.match('^([~]?)([^\.]*)\.([^\.]*)\.([^\.]*)\((.*)\)$', shard_map)
+    if not m:
+        raise CLIError(
+            "Invalid sql shard map identifier '{}'. Sql shard map identifiers must match the format 'server_name.db_name.shard_map_name(refresh_cred_name)'."
+            .format(server))
+
+    g = m.groups()
+
+    t = JobTarget(JobTargetType.sql_shard_map.value)
+    t.membership_type = _membership_type(g[0])
+    t.server_name = g[1]
+    t.database_name = g[2]
+    t.shard_map_name = g[3]
+    t.refresh_credential = JobCredentialIdentity(job_agent_id, g[4]).id()
+
+    return t
+
+
 def job_target_group_create(
         cmd,
         client,
         server_name,
         resource_group_name,
         job_agent_name,
-        target_group_name):
+        target_group_name,
+        target_db=[],
+        target_server=[],
+        target_pool=[],
+        target_shard_map=[]):
+
+    import re
+
+    job_agent_id = JobAgentIdentity(
+        cmd.cli_ctx,
+        job_agent_name,
+        server_name,
+        resource_group_name
+    ).id()
+
+    members = []
+    members += [_job_target_db_parse(db) for db in target_db]
+    members += [_job_target_server_parse(job_agent_id, srv) for srv in target_server]
+    members += [_job_target_pool_parse(job_agent_id, pool) for pool in target_pool]
+    members += [_job_target_shard_map_parse(job_agent_id, shard_map) for shard_map in target_shard_map]
 
     return client.create_or_update(
         server_name=server_name,
         resource_group_name=resource_group_name,
         job_agent_name=job_agent_name,
         target_group_name=target_group_name,
-        parameters=JobTargetGroup(members=[])
-    )
+        members=members)
 
 
 def job_target_group_add_sql_db(

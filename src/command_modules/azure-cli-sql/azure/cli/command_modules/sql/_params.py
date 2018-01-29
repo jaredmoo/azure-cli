@@ -302,6 +302,19 @@ def load_arguments(self, _):
 
         c.ignore('members')
 
+    with self.argument_context('sql agent target-group create') as c:
+        c.argument('target_db',
+                   nargs='+')
+
+        c.argument('target_server',
+                   nargs='+')
+
+        c.argument('target_pool',
+                   nargs='+')
+
+        c.argument('target_shard_map',
+                   nargs='+')
+
     ###############################################
     #                sql db                       #
     ###############################################
