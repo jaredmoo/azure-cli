@@ -247,111 +247,113 @@ def job_step_get(
 
 
 def _parse_optional_membership_type(s):
-    (prefix, exclude, suffix) = s.partition('-')
-    if prefix == '' and exclude == '-':
+    token = '~'
+    (prefix, x, suffix) = s.partition(token)
+    if prefix == '' and exclude == token:
         return (JobTargetGroupMembershipType.exclude.value, suffix)
     else:
-        return (JobTargetGroupMembershipType.include.value, suffix)
+        return (JobTargetGroupMembershipType.include.value, s)
+
+
+def _parse_segments_and_credential(s, count):
+    _parse_log('_parse_segments_and_credential', s)
+
+    (prefix, x, suffix) = s.partition('(')
+    (segments, s) = _parse_segments(prefix, count)
+    (credential, s) = _parse_credential(suffix)
+    return (segments, credential, s)
+
+
+def _parse_segments(s, count):
+    _parse_log('_parse_segments', s)
+
+    segments = []
+    for i in range(count):
+        (segment, s) = _parse_segment(s)
+        segments += [segment]
+    return (segments, s)
 
 
 def _parse_segment(s):
-    (prefix, exclude, suffix) = s.partition('.')
+    _parse_log('_parse_segment', s)
+
+    (prefix, x, suffix) = s.partition('.')
     if not prefix:
-        raise CLIError('blarg!')
+        raise CLIError('_parse_segment error: {}'.format(s))
     return (prefix, suffix)
 
 
-def _parse_open_paren(s):
-    (prefix, exclude, suffix) = s.partition('(')
-    if not prefix:
-        raise CLIError('blarg! (')
-    return (prefix, suffix)
+def _parse_credential(s):
+    _parse_log('_parse_credential', s)
 
-
-def _parse_close_paren(s):
     (prefix, exclude, suffix) = s.partition(')')
-    if not prefix:
-        raise CLIError('blarg! ')
     return (prefix, suffix)
 
 
-def _membership_type(s):
-    return (JobTargetGroupMembershipType.exclude.value if s
-        else JobTargetGroupMembershipType.include.value)
+def _parse_end(s):
+    _parse_log('_parse_end', s)
+
+    if s:
+        raise CLIError('_parse_end error: {}'.format(s))
 
 
-def _job_target_db_parse(db):
-    m = re.match('^([~]?)([^\.]*)\.(.*)$', db)
-    if not m:
-        raise CLIError(
-            "Invalid sql db identifier '{}'. Sql db identifiers must match the format 'server_name.db_name' to include or '~server_name.db_name' to exclude."
-            .format(db))
+def _parse_log(f, s):
+    print(f, ":", s)
 
-    g = m.groups()
+
+def _job_target_db_parse(s):
+    _parse_log('_job_target_db_parse', s)
+
+    (membership_type, s) = _parse_optional_membership_type(s)
+    (segments, s) = _parse_segments(s, 2)
+    _parse_end(s)
 
     t = JobTarget(JobTargetType.sql_database.value)
-    t.membership_type = _membership_type(g[0])
-    t.server_name = g[1]
-    t.database_name = g[2]
+    t.membership_type = membership_type
+    t.server_name = segments[0]
+    t.database_name = segments[1]
 
     return t
 
 
-def _job_target_server_parse(
-        job_agent_id,
-        server):
-    m = re.match('^([^\.]*)\((.*)\)$', server)
-    if not m:
-        raise CLIError(
-            "Invalid sql server identifier '{}'. Sql server identifiers must match the format 'server_name(refresh_cred_name)'."
-            .format(server))
+def _job_target_server_parse(job_agent_id, s):
+    _parse_log('_job_target_server_parse', s)
 
-    g = m.groups()
+    (segments, credential_name, s) = _parse_segments_and_credential(s, 1)
+    _parse_end(s)
 
     t = JobTarget(JobTargetType.sql_server.value)
-    t.server_name = g[0]
-    t.refresh_credential = JobCredentialIdentity(job_agent_id, g[1]).id()
+    t.server_name = segments[0]
+    t.refresh_credential = JobCredentialIdentity(job_agent_id, credential_name).id()
 
     return t
 
 
-def _job_target_pool_parse(
-        job_agent_id,
-        pool):
-    m = re.match('^([~]?)([^\.]*)\.([^\.]*)\((.*)\)$', pool)
-    if not m:
-        raise CLIError(
-            "Invalid sql elastic pool identifier '{}'. Sql elastic pool identifiers must match the format 'server_name.pool_name(refresh_cred_name)'."
-            .format(server))
+def _job_target_pool_parse(job_agent_id, pool):
+    _parse_log('_job_target_pool_parse', s)
 
-    g = m.groups()
+    (membership_type, s) = _parse_optional_membership_type(s)
+    (segments, credential_name, s) = _parse_segments_and_credential(s, 2)
 
     t = JobTarget(JobTargetType.sql_elastic_pool.value)
-    t.membership_type = _membership_type(g[0])
-    t.server_name = g[1]
-    t.elastic_pool_name = g[2]
-    t.refresh_credential = JobCredentialIdentity(job_agent_id, g[3]).id()
+    t.membership_type = _membership_type
+    t.server_name = segments[0]
+    t.elastic_pool_name = segments[1]
+    t.refresh_credential = JobCredentialIdentity(job_agent_id, credential_name).id()
 
     return t
 
 
-def _job_target_shard_map_parse(
-        job_agent_id,
-        shard_map):
-    m = re.match('^([~]?)([^\.]*)\.([^\.]*)\.([^\.]*)\((.*)\)$', shard_map)
-    if not m:
-        raise CLIError(
-            "Invalid sql shard map identifier '{}'. Sql shard map identifiers must match the format 'server_name.db_name.shard_map_name(refresh_cred_name)'."
-            .format(server))
+def _job_target_shard_map_parse(job_agent_id, s):
+    _parse_log('_job_target_shard_map_parse', s)
 
-    g = m.groups()
+    (segments, credential_name, s) = _parse_segments_and_credential(s, 3)
 
     t = JobTarget(JobTargetType.sql_shard_map.value)
-    t.membership_type = _membership_type(g[0])
-    t.server_name = g[1]
-    t.database_name = g[2]
-    t.shard_map_name = g[3]
-    t.refresh_credential = JobCredentialIdentity(job_agent_id, g[4]).id()
+    t.server_name = segments[0]
+    t.database_name = segments[1]
+    t.shard_map_name = segments[2]
+    t.refresh_credential = JobCredentialIdentity(job_agent_id, credential_name).id()
 
     return t
 
