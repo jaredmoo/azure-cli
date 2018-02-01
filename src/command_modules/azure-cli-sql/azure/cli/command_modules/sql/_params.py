@@ -19,6 +19,8 @@ from azure.mgmt.sql.models.export_request import ExportRequest
 from azure.mgmt.sql.models.job_agent import JobAgent
 from azure.mgmt.sql.models.job_schedule import JobSchedule
 from azure.mgmt.sql.models.job_step import JobStep
+from azure.mgmt.sql.models.job_step_action import JobStepAction
+from azure.mgmt.sql.models.job_step_output import JobStepOutput
 from azure.mgmt.sql.models.server import Server
 from azure.mgmt.sql.models.server_azure_ad_administrator import ServerAzureADAdministrator
 from azure.mgmt.sql.models.sql_management_client_enums import (
@@ -36,6 +38,7 @@ from azure.mgmt.sql.models.sql_management_client_enums import (
 from azure.cli.core.commands.parameters import (get_three_state_flag, get_enum_type,
                                                 get_resource_name_completion_list,
                                                 get_location_type)
+
 from .custom import (
     ClientAuthenticationType,
     ClientType,
@@ -284,6 +287,18 @@ def load_arguments(self, _):
 
     with self.argument_context('sql agent job step create') as c:
         c.expand('parameters', JobStep)
+
+        c.expand('action', JobStepAction)
+        c.ignore('type')
+        c.ignore('source')
+        c.argument('value', options_list=['--text'])
+
+        c.ignore('execution_options')
+
+        c.expand('output', JobStepOutput, group_name='Output')
+        c.argument('resource_group', options_list=['--output-resource-group'])
+        c.argument('server', options_list=['--output-server'])
+        c.argument('database', options_list=['--output-db'])
 
     with self.argument_context('sql agent target-group') as c:
         c.argument('job_agent_name', job_agent_param_type)

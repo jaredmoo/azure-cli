@@ -810,6 +810,7 @@ class AzArgumentContext(ArgumentsContext):
         self.scope = scope  # this is called "command" in knack, but that is not an accurate name
         self.group_kwargs = _merge_kwargs(kwargs, command_loader.module_kwargs)
         self.is_stale = False
+        self._expand_count = 1
 
     def __enter__(self):
         return self
@@ -915,8 +916,11 @@ class AzArgumentContext(ArgumentsContext):
             expanded_arguments.append(name)
 
         self.argument(dest,
+                      options_list=['--expanded-{}'.format(self._expand_count)],
                       arg_type=ignore_type,
                       validator=get_complex_argument_processor(expanded_arguments, dest, model_type))
+
+        self._expand_count += 1
 
     def ignore(self, *args):
         self._check_stale()
