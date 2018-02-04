@@ -863,7 +863,7 @@ class AzArgumentContext(ArgumentsContext):
         else:
             super(AzArgumentContext, self).argument(dest, arg_type=ignore_type)
 
-    def expand(self, dest, model_type, group_name=None, patches=None):
+    def expand(self, dest, model_type, group_name=None, patches=None, renames=None):
         # TODO:
         # two privates symbols are imported here. they should be made public or this utility class
         # should be moved into azure.cli.core
@@ -875,6 +875,9 @@ class AzArgumentContext(ArgumentsContext):
 
         if not patches:
             patches = dict()
+
+        if not renames:
+            renames = dict()
 
         # fetch the documentation for model parameters first. for models, which are the classes
         # derive from msrest.serialization.Model and used in the SDK API to carry parameters, the
@@ -911,6 +914,9 @@ class AzArgumentContext(ArgumentsContext):
 
             if name in patches:
                 patches[name](arg)
+
+            if name in renames:
+                name = renames[name]
 
             self.extra(name, arg_type=arg)
             expanded_arguments.append(name)

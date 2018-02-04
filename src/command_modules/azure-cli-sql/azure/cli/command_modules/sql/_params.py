@@ -295,10 +295,23 @@ def load_arguments(self, _):
 
         c.ignore('execution_options')
 
-        c.expand('output', JobStepOutput, group_name='Output')
-        c.argument('resource_group', options_list=['--output-resource-group'])
-        c.argument('server', options_list=['--output-server'])
-        c.argument('database', options_list=['--output-db'])
+        # c.expand('output', JobStepOutput, group_name='Output', renames={
+        #     'resource_group': 'output_resource_group',
+        #     'server': 'output_server',
+        #     'database': 'output_database'
+        # })
+
+        def set_options_list(n):
+            def _patch_action(arg):
+                arg.options_list = n
+                print(arg.options_list)
+            return _patch_action
+
+        c.expand('output', JobStepOutput, group_name='Output', patches={
+            'resource_group': set_options_list(['--output-resource-group']),
+            'server': set_options_list(['--output-server']),
+            'database': set_options_list(['--output-database'])
+        })
 
     with self.argument_context('sql agent target-group') as c:
         c.argument('job_agent_name', job_agent_param_type)
