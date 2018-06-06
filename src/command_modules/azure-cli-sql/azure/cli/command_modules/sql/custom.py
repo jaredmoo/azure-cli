@@ -21,7 +21,9 @@ from azure.mgmt.sql.models import (
     DatabaseEdition,
     EncryptionProtector,
     IdentityType,
+    JobSchedule,
     JobScheduleType,
+    JobTarget,
     JobTargetGroupMembershipType,
     JobTargetType,
     PerformanceLevelUnit,
@@ -34,15 +36,14 @@ from azure.mgmt.sql.models import (
     Sku,
     StorageKeyType,
 )
-<<<<<<< HEAD
-from azure.mgmt.resource import ResourceManagementClient
-from azure.mgmt.storage import StorageManagementClient
-from knack.log import get_logger
-=======
+
+from ._util import (
     get_sql_capabilities_operations,
-    get_sql_managed_instances_operations
-<<<<<<< HEAD
->>>>>>> azure/dev
+    get_sql_managed_instances_operations,
+    get_sql_servers_operations,
+)
+
+logger = get_logger(__name__)
 
 ###############################################
 #                Common funcs                 #
@@ -297,6 +298,10 @@ class JobAgentIdentity(object):  # pylint: disable=too-few-public-methods
         self.cli_ctx = cli_ctx
 
     def id(self):
+        # url parse package has different names in Python 2 and 3. 'six' package works cross-version.
+        from six.moves.urllib.parse import quote  # pylint: disable=import-error
+        from azure.cli.core.commands.client_factory import get_subscription_id
+
         return '/subscriptions/{}/resourceGroups/{}/providers/Microsoft.Sql/servers/{}/jobAgents/{}'.format(
             quote(get_subscription_id(self.cli_ctx)),
             quote(self.resource_group_name),
@@ -311,6 +316,9 @@ class JobCredentialIdentity(object):  # pylint: disable=too-few-public-methods
         self.credential_name = credential_name
 
     def id(self):
+        # url parse package has different names in Python 2 and 3. 'six' package works cross-version.
+        from six.moves.urllib.parse import quote  # pylint: disable=import-error
+
         return '{}/credentials/{}'.format(
             quote(self.job_agent_id),
             quote(self.credential_name))
@@ -335,11 +343,10 @@ def agent_create(
 
     # Build database id
     kwargs['database_id'] = DatabaseIdentity(
-            cmd.cli_ctx,
-            database_name,
-            server_name,
-            resource_group_name
-        ).id()
+        cmd.cli_ctx,
+        database_name,
+        server_name,
+        resource_group_name).id()
 
     # Create
     return client.create_or_update(
@@ -349,7 +356,7 @@ def agent_create(
         parameters=kwargs)
 
 
-class SettableOnceValue:
+class SettableOnceValue:  # pylint: disable=too-few-public-methods
     def __init__(self, value_name):
         self.value_name = value_name
         self.value = None
@@ -367,7 +374,6 @@ class SettableOnceValue:
 
 
 def job_create(
-        cmd,
         client,
         server_name,
         resource_group_name,
@@ -382,8 +388,7 @@ def job_create(
         weeks=None,
         days=None,
         hours=None,
-        minutes=None,
-        **kwargs):
+        minutes=None):
 
     final_interval = SettableOnceValue('interval')
 
@@ -419,7 +424,6 @@ def job_create(
 
 
 def job_step_list(
-        cmd,
         client,
         server_name,
         resource_group_name,
@@ -434,16 +438,15 @@ def job_step_list(
             job_agent_name=job_agent_name,
             job_name=job_name,
             job_version=job_version)
-    else:
-        return client.list_by_server(
-            server_name=server_name,
-            resource_group_name=resource_group_name,
-            job_agent_name=job_agent_name,
-            job_name=job_name)
+
+    return client.list_by_server(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        job_name=job_name)
 
 
 def job_step_get(
-        cmd,
         client,
         server_name,
         resource_group_name,
@@ -460,13 +463,13 @@ def job_step_get(
             job_name=job_name,
             step_name=step_name,
             job_version=job_version)
-    else:
-        return client.get(
-            server_name=server_name,
-            resource_group_name=resource_group_name,
-            job_agent_name=job_agent_name,
-            job_name=job_name,
-            step_name=step_name)
+
+    return client.get(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        job_name=job_name,
+        step_name=step_name)
 
 
 def _parse_optional_membership_type(s):
@@ -474,8 +477,8 @@ def _parse_optional_membership_type(s):
 
     if len(s) > 1 and s[0] == '~':
         return (JobTargetGroupMembershipType.exclude.value, s[1:])
-    else:
-        return (JobTargetGroupMembershipType.include.value, s)
+
+    return (JobTargetGroupMembershipType.include.value, s)
 
 
 def _parse_segments_and_credential(s):
@@ -490,7 +493,7 @@ def _parse_segments_and_credential(s):
 def _parse_segments(s):
     logger.debug('_parse_segments: %s', s)
 
-    (prefix, x, suffix) = s.partition('(')
+    (prefix, _, suffix) = s.partition('(')
 
     segments = []
     while prefix:
@@ -503,14 +506,14 @@ def _parse_segments(s):
 def _parse_segment(s):
     logger.debug('_parse_segment: %s', s)
 
-    (prefix, x, suffix) = s.partition('.')
+    (prefix, _, suffix) = s.partition('.')
     return (prefix, suffix)
 
 
 def _parse_credential(s):
     logger.debug('_parse_credential: %s', s)
 
-    (prefix, exclude, suffix) = s.partition(')')
+    (prefix, _, suffix) = s.partition(')')
     return (prefix, suffix)
 
 
@@ -523,7 +526,8 @@ def _job_target_sql_db_parse(s):
 
     logger.debug('_job_target_sql_db_parse outcome: %s %s %s', membership_type, segments, suffix)
     if len(segments) != 2 or suffix:
-        raise CLIError("Invalid database target '{}', expected format 'server_name.database_name' (or '~server_name.database_name' to exclude)."
+        raise CLIError("Invalid database target '{}', expected format 'server_name.database_name' "
+                       "(or '~server_name.database_name' to exclude)."
                        .format(s))
 
     t = JobTarget(JobTargetType.sql_database.value)
@@ -561,7 +565,9 @@ def _job_target_sql_elastic_pool_parse(job_agent_id, s):
 
     logger.debug('_job_target_sql_elastic_pool_parse outcome: %s %s %s', segments, credential_name, suffix)
     if len(segments) != 2 or not credential_name or suffix:
-        raise CLIError("Invalid elastic pool '{}', expected format 'server_name.pool_name(refresh_credential_name)' (or '~server_name.pool_name(refresh_credential_name)' to exclude)."
+        raise CLIError("Invalid elastic pool '{}', expected format "
+                       "'server_name.pool_name(refresh_credential_name)' (or "
+                       "'~server_name.pool_name(refresh_credential_name)' to exclude)."
                        .format(s))
 
     t = JobTarget(JobTargetType.sql_elastic_pool.value)
@@ -581,7 +587,8 @@ def _job_target_sql_shard_map_parse(job_agent_id, s):
 
     logger.debug('_job_target_sql_shard_map_parse outcome: %s %s %s', segments, credential_name, suffix)
     if len(segments) != 3 or not credential_name or rest:
-        raise CLIError("Invalid shard map target '{}', expected format 'server_name.database_name.shard_map_name(refresh_credential_name)'."
+        raise CLIError("Invalid shard map target '{}', expected format "
+                       "'server_name.database_name.shard_map_name(refresh_credential_name)'."
                        .format(s))
 
     t = JobTarget(JobTargetType.sql_shard_map.value)
@@ -600,12 +607,10 @@ def job_target_group_create(
         resource_group_name,
         job_agent_name,
         target_group_name,
-        target_sql_db=[],
-        target_sql_server=[],
-        target_sql_elastic_pool=[],
-        target_sql_shard_map=[]):
-
-    import re
+        target_sql_db=None,
+        target_sql_server=None,
+        target_sql_elastic_pool=None,
+        target_sql_shard_map=None):
 
     job_agent_id = JobAgentIdentity(
         cmd.cli_ctx,
@@ -615,10 +620,18 @@ def job_target_group_create(
     ).id()
 
     members = []
-    members += [_job_target_sql_db_parse(db) for db in target_sql_db]
-    members += [_job_target_sql_server_parse(job_agent_id, srv) for srv in target_sql_server]
-    members += [_job_target_sql_elastic_pool_parse(job_agent_id, pool) for pool in target_sql_elastic_pool]
-    members += [_job_target_sql_shard_map_parse(job_agent_id, shard_map) for shard_map in target_sql_shard_map]
+
+    if target_sql_db:
+        members += [_job_target_sql_db_parse(db) for db in target_sql_db]
+
+    if target_sql_server:
+        members += [_job_target_sql_server_parse(job_agent_id, srv) for srv in target_sql_server]
+
+    if target_sql_elastic_pool:
+        members += [_job_target_sql_elastic_pool_parse(job_agent_id, pool) for pool in target_sql_elastic_pool]
+
+    if target_sql_shard_map:
+        members += [_job_target_sql_shard_map_parse(job_agent_id, shard_map) for shard_map in target_sql_shard_map]
 
     return client.create_or_update(
         server_name=server_name,

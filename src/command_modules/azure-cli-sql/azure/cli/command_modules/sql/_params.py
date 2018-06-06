@@ -15,6 +15,10 @@ from azure.mgmt.sql.models import (
     ElasticPool,
     ElasticPoolPerDatabaseSettings,
     ImportExtensionRequest,
+    JobSchedule,
+    JobStep,
+    JobStepAction,
+    JobStepOutput,
     ExportRequest,
     ManagedDatabase,
     ManagedInstance,
@@ -112,7 +116,8 @@ server_param_type = CLIArgumentType(
 job_agent_param_type = CLIArgumentType(
     options_list=['--agent', '-a'],
     configured_default='sql-agent',
-    help='Name of the Azure SQL Agent. You can configure the default agent using `az configure --defaults sql-agent=<name>`',
+    help='Name of the Azure SQL Agent. You can configure the default agent using '
+    '`az configure --defaults sql-agent=<name>`',
     # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
     id_part='child_name_1')
 
@@ -355,7 +360,8 @@ def load_arguments(self, _):
         schedule_interval_arg_group = 'Schedule Interval'
 
         c.argument('interval',
-                   help='Interval in ISO8601 duration format, e.g. "P1M" (1 month), "P2W" (2 weeks), "P3D" (3 days), "PT4H" (4 hours), or "PT5M" (5 minutes).',
+                   help='Interval in ISO8601 duration format, e.g. "P1M" (1 month), "P2W" (2 weeks), '
+                   '"P3D" (3 days), "PT4H" (4 hours), or "PT5M" (5 minutes).',
                    arg_group=schedule_interval_arg_group)
         c.argument('months',
                    help='Interval in months.',
