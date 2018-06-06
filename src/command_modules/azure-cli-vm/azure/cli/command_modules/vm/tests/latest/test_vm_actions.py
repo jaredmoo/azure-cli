@@ -17,9 +17,11 @@ from azure.cli.command_modules.vm._validators import (validate_ssh_key,
                                                       process_disk_or_snapshot_create_namespace,
                                                       _validate_vmss_create_subnet,
                                                       _get_next_subnet_addr_suffix,
-                                                      _validate_vm_vmss_msi)
+                                                      _validate_vm_vmss_msi,
+                                                      _validate_vm_vmss_accelerated_networking)
+from azure.cli.command_modules.vm._vm_utils import normalize_disk_info
 from azure.cli.testsdk import TestCli
-
+from azure.mgmt.compute.models import CachingTypes
 from knack.util import CLIError
 
 
@@ -73,6 +75,12 @@ class TestActions(unittest.TestCase):
         self.assertFalse(src_disk)
         self.assertFalse(src_snapshot)
         self.assertEqual(src_blob_uri, test_data)
+
+        test_data = '/subscriptions/0b1f6471-1bf0-4dda-aec3-cb9272f09590/resourceGroups/JAVACSMRG6017/providers/Microsoft.Compute/disks/ex.vhd'
+        src_blob_uri, src_disk, src_snapshot = _figure_out_storage_source(None, 'tg1', test_data)
+        self.assertEqual(src_disk, test_data)
+        self.assertFalse(src_snapshot)
+        self.assertFalse(src_blob_uri)
 
     def test_source_storage_account_err_case(self):
         np = mock.MagicMock()
@@ -207,6 +215,21 @@ class TestActions(unittest.TestCase):
                                        "Configuring plan settings will be skipped", 'publisher1:offer1:sku1:1.0.0',
                                        'image not found')
 
+    def test_parse_unmanaged_image_argument(self):
+        np = mock.MagicMock()
+        np.image = 'https://foo.blob.core.windows.net/vhds/1'
+        cmd = mock.MagicMock()
+        # action & assert
+        self.assertEqual(_parse_image_argument(cmd, np), 'uri')
+
+    def test_parse_managed_image_argument(self):
+        np = mock.MagicMock()
+        np.image = '/subscriptions/123/resourceGroups/foo/providers/Microsoft.Compute/images/nixos-imag.vhd'
+        cmd = mock.MagicMock()
+
+        # action & assert
+        self.assertEqual(_parse_image_argument(cmd, np), 'image_id')
+
     def test_get_next_subnet_addr_suffix(self):
         result = _get_next_subnet_addr_suffix('10.0.0.0/16', '10.0.0.0/24', 24)
         self.assertEqual(result, '10.0.1.0/24')
@@ -241,8 +264,9 @@ class TestActions(unittest.TestCase):
         np_mock.instance_count = 1000
         np_mock.app_gateway_type = 'new'
         np_mock.app_gateway_subnet_address_prefix = None
+        np_mock.disable_overprovision = None
         _validate_vmss_create_subnet(np_mock)
-        self.assertEqual(np_mock.app_gateway_subnet_address_prefix, '10.0.4.0/24')
+        self.assertEqual(np_mock.app_gateway_subnet_address_prefix, '10.0.8.0/24')
 
     @mock.patch('azure.cli.command_modules.vm._validators._resolve_role_id', autospec=True)
     @mock.patch('azure.cli.core.commands.client_factory.get_subscription_id', autospec=True)
@@ -310,6 +334,95 @@ class TestActions(unittest.TestCase):
         _validate_vm_vmss_msi(cmd, np_mock, from_set_command=True)
         self.assertEqual(np_mock.identity_role_id, 'foo-role-id')
         mock_resolve_role_id.assert_called_with(cmd.cli_ctx, 'reader', 'foo-scope')
+
+    def test_normalize_disk_info(self):
+        cmd = mock.MagicMock()
+        cmd.get_models.return_value = CachingTypes
+
+        # verify caching configuring
+
+        r = normalize_disk_info()
+        self.assertEqual(r['os']['caching'], CachingTypes.read_write.value)
+
+        r = normalize_disk_info(data_disk_cachings=['0=None'], data_disk_sizes_gb=[1, 2])
+        self.assertEqual(r[0]['caching'], 'None')
+        self.assertEqual(r[0]['diskSizeGB'], 1)
+        self.assertEqual(r[1]['diskSizeGB'], 2)
+        self.assertEqual(r['os']['caching'], CachingTypes.read_write.value)
+
+        r = normalize_disk_info(data_disk_cachings=['None'], os_disk_caching='ReadOnly', data_disk_sizes_gb=[1, 2])
+        self.assertEqual(r[0]['caching'], 'None')
+        self.assertEqual(r[1]['caching'], 'None')
+        self.assertEqual(r['os']['caching'], 'ReadOnly')
+
+        r = normalize_disk_info(data_disk_cachings=['0=None', '1=ReadOnly'], data_disk_sizes_gb=[1, 2])
+        self.assertEqual(r[0]['caching'], 'None')
+        self.assertEqual(r[1]['caching'], 'ReadOnly')
+        self.assertEqual(r['os']['caching'], CachingTypes.read_write.value)
+
+        # CLI will not tweak any casing from the values
+        r = normalize_disk_info(data_disk_cachings=['0=none', '1=readonly'], data_disk_sizes_gb=[1, 2])
+        self.assertEqual(r[0]['caching'], 'none')
+        self.assertEqual(r[1]['caching'], 'readonly')
+
+        # error on configuring non-existing disks
+        with self.assertRaises(CLIError) as err:
+            normalize_disk_info(data_disk_cachings=['0=None', '1=foo'])
+        self.assertTrue("data disk with lun of '0' doesn't exist" in str(err.exception))
+
+    def test_validate_vm_vmss_accelerated_networking(self):
+        # not a qualified size
+        np = mock.MagicMock()
+        np.size = 'Standard_Ds1_v2'
+        np.accelerated_networking = None
+        _validate_vm_vmss_accelerated_networking(np)
+        self.assertIsNone(np.accelerated_networking)
+
+        # qualified size and recognized distro
+        np = mock.MagicMock()
+        np.size = 'Standard_f8'
+        np.accelerated_networking = None
+        np.os_publisher, np.os_offer, np.os_sku = 'Canonical', 'UbuntuServer', '16.04'
+        _validate_vm_vmss_accelerated_networking(np)
+        self.assertTrue(np.accelerated_networking)
+
+        np = mock.MagicMock()
+        np.size = 'Standard_DS4_v2'
+        np.accelerated_networking = None
+        np.os_publisher, np.os_offer, np.os_sku = 'coreos', 'coreos', 'alpha'
+        _validate_vm_vmss_accelerated_networking(np)
+        self.assertTrue(np.accelerated_networking)
+
+        # not a qualified size, but user want it
+        np = mock.MagicMock()
+        np.size = 'Standard_Ds1_v2'
+        np.accelerated_networking = True
+        _validate_vm_vmss_accelerated_networking(np)
+        self.assertTrue(np.accelerated_networking)
+
+        # qualified size, but distro version not good
+        np = mock.MagicMock()
+        np.size = 'Standard_f8'
+        np.accelerated_networking = None
+        np.os_publisher, np.os_offer, np.os_sku = 'canonical', 'UbuntuServer', '18.04'
+        _validate_vm_vmss_accelerated_networking(np)
+        self.assertIsNone(np.accelerated_networking)
+
+        # qualified size, but distro infor is not available (say, custom images)
+        np = mock.MagicMock()
+        np.size = 'Standard_f8'
+        np.accelerated_networking = None
+        np.os_publisher = None
+        _validate_vm_vmss_accelerated_networking(np)
+        self.assertIsNone(np.accelerated_networking)
+
+        # qualified size, but distro version is not right
+        np = mock.MagicMock()
+        np.size = 'Standard_f8'
+        np.accelerated_networking = None
+        np.os_publisher, np.os_offer, np.os_sku = 'oracle', 'oracle-linux', '7.3'
+        _validate_vm_vmss_accelerated_networking(np)
+        self.assertIsNone(np.accelerated_networking)
 
 
 if __name__ == '__main__':

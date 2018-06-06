@@ -37,11 +37,8 @@ if [ "$target_profile" != "latest" ]; then
     # example: 2017-03-09-profile
     target_profile=$target_profile-profile
 fi
-title "Switch profile to $target_profile"
 
-az cloud set -n AzureCloud --profile $target_profile
-
-title 'Runing tests'
-coverage run -m automation test --parallel --ci
+title 'Running tests'
+coverage run -m automation test --ci --profile $target_profile
 coverage combine
 codecov

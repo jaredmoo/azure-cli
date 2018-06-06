@@ -12,6 +12,8 @@ What is an Extension?
 - Currently, we support one extension type, a [Python Wheel](http://pythonwheels.com/).
 - All extension documentation here refers to this type of extension.
 
+> Extensions should be built with wheel `0.29.0` or `0.30.0` until [#6441](https://github.com/Azure/azure-cli/issues/6441) is resolved
+
 
 What an Extension is not
 ------------------------
@@ -27,6 +29,8 @@ Doc Sections
 ------------
 
 - [Authoring](authoring.md) - How to author and develop an extension
+
+- [Command Guidelines](../command_guidelines.md) - Command Guidelines
 
 - [Publishing](publishing.md) - How to publish an extension
 

@@ -2,6 +2,43 @@
 
 Release History
 ===============
+2.0.27
+++++++
+* Add 'azure-storage-blob' as dependency.
+
+2.0.26
+++++++
+* Allow VSTS as a remote source location
+* Add 'acr import' command.
+
+2.0.25
+++++++
+* Improve manifest delete confirmation on tags
+
+2.0.24
+++++++
+* Add ACR Build commands.
+* Improve resource not found error messages.
+* Improve resource creation performance and error handling.
+* Improve acr login in non-standard consoles and WSL.
+* Improve repository commands error messages.
+* Update table columns and ordering.
+
+2.0.23
+++++++
+* Improve error handling of wincred fallback.
+* `sdist` is now compatible with wheel 0.31.0
+
+2.0.22
+++++++
+* Improve repository delete command with --image parameter to support docker image format.
+* Deprecate --manifest and --tag parameters in repository delete command.
+* Add acr repository untag command to remove a tag without deleting data.
+
+2.0.21
+++++++
+* Minor fixes
+
 2.0.20
 ++++++
 * minor fix
