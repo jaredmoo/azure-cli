@@ -121,6 +121,11 @@ job_agent_param_type = CLIArgumentType(
     # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
     id_part='child_name_1')
 
+job_param_type = CLIArgumentType(
+    options_list=['--job', '-j'],
+    # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
+    id_part='child_name_2')
+
 available_param_type = CLIArgumentType(
     options_list=['--available', '-a'],
     help='If specified, show only results that are available in the specified region.')
@@ -299,47 +304,22 @@ def load_arguments(self, _):
         c.argument('tags', arg_type=tags_type)
 
     ###############################################
-    #                sql agent                    #
+    #                sql job                      #
     ###############################################
-    with self.argument_context('sql agent') as c:
+    with self.argument_context('sql job') as c:
         c.argument('server_name',
                    arg_type=server_param_type,
                    # Allow --ids command line argument. id_part=name is 1st name in uri
                    id_part='name')
 
-        c.argument('job_agent_name',
-                   options_list=['--name', '-n'],
-                   help='Name of the Azure SQL Agent.',
-                   # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
-                   id_part='child_name_1')
-
-        c.argument('database_name',
-                   options_list=['--database-name', '-d'],
-                   help='Name of the Azure SQL Database.')
-
-    with self.argument_context('sql agent cred') as c:
-        c.argument('job_agent_name', type=job_agent_param_type)
-
-        c.argument('credential_name',
-                   options_list=['--name', '-n'],
-                   # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
-                   id_part='child_name_2')
-
-        c.argument('username', options_list=['--username', '-u'])
-        c.argument('password', options_list=['--password', '-p'])
-
-    with self.argument_context('sql agent ex') as c:
-        c.argument('job_agent_name', job_agent_param_type)
-
-    with self.argument_context('sql agent job') as c:
-        c.argument('job_agent_name', job_agent_param_type)
-
         c.argument('job_name',
                    options_list=['--name', '-n'],
-                   # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
-                   id_part='child_name_2')
+                   arg_type=job_param_type)
 
-    with self.argument_context('sql agent job create') as c:
+        c.argument('job_agent_name',
+                   arg_type=job_agent_param_type)
+
+    with self.argument_context('sql job create') as c:
         c.argument('description',
                    help='User-defined description of the job.')
 
@@ -379,11 +359,31 @@ def load_arguments(self, _):
                    help='Interval in minutes.',
                    arg_group=schedule_interval_arg_group)
 
-    with self.argument_context('sql agent job step') as c:
-        c.argument('job_name',
-                   options_list=['--job', '-j'],
+    with self.argument_context('sql job agent') as c:
+        c.argument('job_agent_name',
+                   arg_type=job_agent_param_type,
+                   options_list=['--name', '-n'])
+
+        c.argument('database_name',
+                   options_list=['--database-name', '-d'],
+                   help='Name of the Azure SQL Database.')
+
+    with self.argument_context('sql job credential') as c:
+        c.argument('credential_name',
+                   options_list=['--name', '-n'],
                    # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
                    id_part='child_name_2')
+
+        c.argument('username', options_list=['--username', '-u'])
+        c.argument('password', options_list=['--password', '-p'])
+
+    with self.argument_context('sql job ex') as c:
+        c.argument('job_name',
+                   arg_type=job_param_type)
+
+    with self.argument_context('sql job step') as c:
+        c.argument('job_name',
+                   arg_type=job_param_type)
 
         c.argument('step_name',
                    options_list=['--name', '-n'],
@@ -393,7 +393,7 @@ def load_arguments(self, _):
         c.argument('job_version',
                    options_list=['--version', '-v'])
 
-    with self.argument_context('sql agent job step create') as c:
+    with self.argument_context('sql job step create') as c:
         c.expand('parameters', JobStep)
 
         c.expand('action', JobStepAction)
@@ -421,9 +421,7 @@ def load_arguments(self, _):
             'database': set_options_list(['--output-database'])
         })
 
-    with self.argument_context('sql agent target-group') as c:
-        c.argument('job_agent_name', job_agent_param_type)
-
+    with self.argument_context('sql job target-group') as c:
         c.argument('target_group_name',
                    options_list=['--name', '-n'],
                    # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
@@ -431,7 +429,7 @@ def load_arguments(self, _):
 
         c.ignore('members')
 
-    with self.argument_context('sql agent target-group create') as c:
+    with self.argument_context('sql job target-group create') as c:
         c.argument('target_sql_db',
                    nargs='+')
 

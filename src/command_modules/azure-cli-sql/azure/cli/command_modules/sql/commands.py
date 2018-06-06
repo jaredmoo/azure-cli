@@ -61,13 +61,13 @@ from ._validators import (
 def load_command_table(self, _):
 
     ###############################################
-    #                sql agent                    #
+    #                sql job                      #
     ###############################################
     job_agents_operations = CliCommandType(
         operations_tmpl='azure.mgmt.sql.operations.job_agents_operations#JobAgentsOperations.{}',
         client_factory=get_sql_job_agents_operations)
 
-    with self.command_group('sql agent', job_agents_operations, client_factory=get_sql_job_agents_operations) as g:
+    with self.command_group('sql job agent', job_agents_operations, client_factory=get_sql_job_agents_operations) as g:
         g.command('list', 'list_by_server')
         g.command('show', 'get')
         g.custom_command('create', 'agent_create')
@@ -78,7 +78,7 @@ def load_command_table(self, _):
         operations_tmpl='azure.mgmt.sql.operations.job_credentials_operations#JobCredentialsOperations.{}',
         client_factory=get_sql_job_credentials_operations)
 
-    with self.command_group('sql agent cred', job_credentials_operations, client_factory=get_sql_job_credentials_operations) as g:
+    with self.command_group('sql job credential', job_credentials_operations, client_factory=get_sql_job_credentials_operations) as g:
         g.command('list', 'list_by_agent')
         g.command('show', 'get')
         g.command('create', 'create_or_update')
@@ -89,14 +89,14 @@ def load_command_table(self, _):
         operations_tmpl='azure.mgmt.sql.operations.job_executions_operations#JobExecutionsOperations.{}',
         client_factory=get_sql_job_executions_operations)
 
-    with self.command_group('sql agent ex', job_executions_operations, client_factory=get_sql_job_executions_operations) as g:
+    with self.command_group('sql job ex', job_executions_operations, client_factory=get_sql_job_executions_operations) as g:
         g.command('list', 'list_by_agent', no_wait_param='raw')
 
     jobs_operations = CliCommandType(
         operations_tmpl='azure.mgmt.sql.operations.jobs_operations#JobsOperations.{}',
         client_factory=get_sql_jobs_operations)
 
-    with self.command_group('sql agent job', jobs_operations, client_factory=get_sql_jobs_operations) as g:
+    with self.command_group('sql job', jobs_operations, client_factory=get_sql_jobs_operations) as g:
         g.command('list', 'list_by_agent')
         g.command('show', 'get')
         g.custom_command('create', 'job_create')
@@ -107,7 +107,7 @@ def load_command_table(self, _):
         operations_tmpl='azure.mgmt.sql.operations.job_steps_operations#JobStepsOperations.{}',
         client_factory=get_sql_job_steps_operations)
 
-    with self.command_group('sql agent job step', job_steps_operations, client_factory=get_sql_job_steps_operations) as g:
+    with self.command_group('sql job step', job_steps_operations, client_factory=get_sql_job_steps_operations) as g:
         g.custom_command('list', 'job_step_list')
         g.command('show', 'get')
         g.command('create', 'create_or_update')
@@ -118,7 +118,7 @@ def load_command_table(self, _):
         operations_tmpl='azure.mgmt.sql.operations.job_target_groups_operations#JobTargetGroupsOperations.{}',
         client_factory=get_sql_job_target_groups_operations)
 
-    with self.command_group('sql agent target-group', job_target_groups_operations, client_factory=get_sql_job_target_groups_operations) as g:
+    with self.command_group('sql job target-group', job_target_groups_operations, client_factory=get_sql_job_target_groups_operations) as g:
         g.command('list', 'list_by_agent')
         g.command('show', 'get')
         g.custom_command('create', 'job_target_group_create')
