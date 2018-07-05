@@ -32,7 +32,7 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments):
 
             # Get list of keys that are in the argparse namespace which match
             # the argparse names of properties that we are looking for
-            matched_names = [k for k in vars(namespace) if k in vars(model_properties)]
+            matched_names = [k for k in vars(namespace) if k in model_properties]
 
             # For each key, map the key's model property name to the value in the namespace
             kwargs = dict((model_properties[k], getattr(namespace, k)) for k in matched_names)
