@@ -9,7 +9,7 @@ from azure.cli.core.util import CLIError
 # executed. See C:\git\azure-cli\env\lib\site-packages\knack\invocation.py `def _validation`
 
 
-def create_args_for_complex_type(arg_ctx, dest, model_type, arguments):
+def create_args_for_complex_type(arg_ctx, dest, model_type, arguments, arg_group=None):
     '''
     Creates args that will be combined into an object by an arg validator.
     '''
@@ -35,10 +35,10 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments):
             matched_names = [k for k in vars(namespace) if k in model_properties]
 
             # For each key, map the key's model property name to the value in the namespace
-            kwargs = dict((model_properties[k], getattr(namespace, k)) for k in matched_names)
+            properties = dict((model_properties[k], getattr(namespace, k)) for k in matched_names)
 
             # Construct the complex model type
-            model = model_type(**kwargs)
+            model = model_type(**properties)
 
             # Add the complex model back to the argparse namespace
             setattr(namespace, assigned_arg, model)
@@ -74,6 +74,7 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments):
             property_key,
             required=required,
             options_list=options_list,
+            arg_group=arg_group,
             help=help_text)
 
         model_properties[property_key] = property_name

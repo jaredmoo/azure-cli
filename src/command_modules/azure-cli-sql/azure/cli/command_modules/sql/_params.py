@@ -18,6 +18,7 @@ from azure.mgmt.sql.models import (
     JobSchedule,
     JobStep,
     JobStepAction,
+    JobStepExecutionOptions,
     JobStepOutput,
     ExportRequest,
     ManagedDatabase,
@@ -320,7 +321,11 @@ def load_arguments(self, _):
         c.argument('description',
                    help='User-defined description of the job.')
 
-        c.expand('schedule', JobSchedule)
+        create_args_for_complex_type(c, 'schedule', JobSchedule, [
+            'enabled',
+            'start_time',
+            'end_time'
+        ])
 
         schedule_arg_group = 'Schedule'
 
@@ -328,8 +333,6 @@ def load_arguments(self, _):
                    help='Whether scheduled execution of this job is enabled.',
                    arg_group=schedule_arg_group,
                    arg_type=get_three_state_flag())
-
-        c.ignore('type')
 
         c.argument('start_time', arg_group=schedule_arg_group)
         c.argument('end_time', arg_group=schedule_arg_group)
@@ -362,8 +365,8 @@ def load_arguments(self, _):
                    options_list=['--name', '-n'])
 
         c.argument('database_name',
-                   options_list=['--database-name', '-d'],
-                   help='Name of the Azure SQL Database.')
+                   options_list=['--database', '-d'],
+                   help='Name of the Azure SQL Database that the agent is linked to.')
 
     with self.argument_context('sql job credential') as c:
         c.argument('credential_name',
@@ -371,7 +374,7 @@ def load_arguments(self, _):
                    # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
                    id_part='child_name_2')
 
-        c.argument('username', options_list=['--username', '-u'])
+        c.argument('username', options_list=['--user', '-u'])
         c.argument('password', options_list=['--password', '-p'])
 
     with self.argument_context('sql job ex') as c:
@@ -393,6 +396,7 @@ def load_arguments(self, _):
     with self.argument_context('sql job step create') as c:
         create_args_for_complex_type(c, 'parameters', JobStep, [
             'action',
+            'execution_options',
             'output'
         ])
 
@@ -409,23 +413,26 @@ def load_arguments(self, _):
             'database_name',
             'schema_name',
             'table_name',
-        ])
-        output_group_name='Output'
+        ], arg_group='Outout')
         c.argument('output_server_name',
                    options_list=['--output-server'],
-                   required=False,
-                   arg_group=output_group_name)
+                   required=False)
         c.argument('database_name',
                    options_list=['--output-db'],
-                   required=False,
-                   arg_group=output_group_name)
+                   required=False)
         c.argument('schema_name',
-                   options_list=['--output-schema'],
-                   arg_group=output_group_name)
+                   options_list=['--output-schema'])
         c.argument('table_name',
                    options_list=['--output-table'],
-                   required=False,
-                   arg_group=output_group_name)
+                   required=False)
+
+        create_args_for_complex_type(c, 'execution_options', JobStepExecutionOptions, [
+            'timeout_seconds', # TODO: Use size converter?
+            'retry_attempts',
+            'initial_retry_interval_seconds',
+            'maximum_retry_interval_seconds',
+            'retry_interval_backoff_multiplier'
+        ], arg_group='Execution Options')
 
     with self.argument_context('sql job target-group') as c:
         c.argument('target_group_name',

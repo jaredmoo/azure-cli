@@ -89,6 +89,9 @@ def load_command_table(self, _):
         operations_tmpl='azure.mgmt.sql.operations.job_executions_operations#JobExecutionsOperations.{}',
         client_factory=get_sql_job_executions_operations)
 
+    with self.command_group('sql job', job_executions_operations, client_factory=get_sql_job_executions_operations) as g:
+        g.command('start', 'create', no_wait_param='raw')
+
     with self.command_group('sql job ex', job_executions_operations, client_factory=get_sql_job_executions_operations) as g:
         g.command('list', 'list_by_agent', no_wait_param='raw')
 
