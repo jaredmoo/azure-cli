@@ -3,6 +3,14 @@
 Release History
 ===============
 
+2.0.29
+++++++
+* Fixed 'The provided resource group name ... did not match the name in the Url' error when specifying elastic pool name for `sql db copy` and `sql db replica create` commands.
+
+2.0.28
+++++++
+* Minor fixes.
+
 2.0.27
 ++++++
 * Added new Managed instance and Managed database CRUD commands.

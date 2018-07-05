@@ -3,6 +3,38 @@
 Release History
 ===============
 
+2.1.4
++++++
+* `az aks create` will error out if `--max-pods` is less than 5
+
+2.1.3
++++++
+* Update PyYAML dependency to 4.2b4
+* Handle monitoring solution through its subscription ID
+
+2.1.2
++++++
+* Breaking change: Enable Kubernetes role-based access control by default.
+* Add a `--disable-rbac` argument and deprecate `--enable-rbac` since it's the default now.
+* Updated options for `az aks browse` command. Added `--listen-port` support.
+* Update the default helm chart package for `az aks install-connector` command. Use virtual-kubelet-for-aks-latest.tgz.
+* added `az aks enable-addons` and `disable-addons` commands to update an existing cluster
+
+2.1.1
++++++
+* Updated options of `az aks use-dev-spaces` command. Added `--update` support.
+* `az aks get-credentials --admin` won't replace the user context in $HOME/.kube/config
+* expose read-only "nodeResourceGroup" property on managed clusters
+* fix `az acs browse` command error
+
+2.1.0
++++++
+* `az aks create` understands advanced networking (VNet) options
+* `az aks create` accepts options to enable Log Analytics monitoring and HTTP application routing addons
+* `az aks create --no-ssh-key` creates a cluster without using local SSH keys
+* `az aks create --enable-rbac` creates a cluster with Kubernetes Role-Based Access Control
+* `az aks create` handles Azure Active Directory auth options (PREVIEW)
+
 2.0.34
 ++++++
 * `az aks get-credentials` creates the kube config file with more secure filesystem permissions

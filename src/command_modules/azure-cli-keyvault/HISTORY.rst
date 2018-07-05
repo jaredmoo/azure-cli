@@ -2,6 +2,15 @@
 
 Release History
 ===============
+
+2.0.24
+++++++
+* Minor fixes
+
+2.0.23
+++++++
+* Minor fixes.
+
 2.0.22
 ++++++
 * make keyvault commands work in cloud shell or vms with identity

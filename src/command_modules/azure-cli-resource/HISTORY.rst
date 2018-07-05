@@ -3,6 +3,20 @@
 Release History
 ===============
 
+2.0.33
+++++++
+* `group deployment delete`: Add `--no-wait` support.
+* `deployment delete`: Add `--no-wait` support.
+* Added `deployment wait` command.
+
+2.0.32
+++++++
+* Support deployment at subscription scope: new operation group `deployment`.
+
+2.0.31
+++++++
+* Minor changes
+
 2.0.30
 ++++++
 *  add `account management-group` commands.
