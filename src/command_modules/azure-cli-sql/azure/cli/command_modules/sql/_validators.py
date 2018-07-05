@@ -17,7 +17,7 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments):
     from knack.arguments import ignore_type
     from knack.introspection import option_descriptions
 
-    def get_complex_argument_processor(expanded_arguments, assigned_arg, model_type):
+    def get_complex_argument_processor(model_properties, assigned_arg, model_type):
         '''
         Return a validator which will aggregate multiple arguments to one complex argument.
         '''
@@ -29,9 +29,19 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments):
             :param namespace: The argparse namespace represents the CLI arguments.
             :return: The argument of specific type.
             '''
-            ns = vars(namespace)
-            kwargs = dict((k, ns[k]) for k in ns if k in set(expanded_arguments))
-            setattr(namespace, assigned_arg, model_type(**kwargs))
+
+            # Get list of keys that are in the argparse namespace which match
+            # the argparse names of properties that we are looking for
+            matched_names = [k for k in vars(namespace) if k in vars(model_properties)]
+
+            # For each key, map the key's model property name to the value in the namespace
+            kwargs = dict((model_properties[k], getattr(namespace, k)) for k in matched_names)
+
+            # Construct the complex model type
+            model = model_type(**kwargs)
+
+            # Add the complex model back to the argparse namespace
+            setattr(namespace, assigned_arg, model)
 
         return _expansion_validator_impl
 
@@ -40,24 +50,33 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments):
     # document of their properties are attached to the classes instead of constructors.
     parameter_docs = option_descriptions(model_type)
 
-    for name in arguments:
+    model_properties = dict()
+
+    for arg in arguments:
+        if isinstance(arg, tuple):
+            property_name, property_key = arg
+        else:
+            property_name = property_key = arg
+
         # Get the validation map from the model type in order to determine
         # whether the argument should be required
-        validation = model_type._validation.get(name, None)  # pylint: disable=protected-access
+        validation = model_type._validation.get(property_name, None)  # pylint: disable=protected-access
         required = validation.get('required', False) if validation else False
 
         # Generate the command line argument name from the property name
-        options_list = ['--' + name.replace('_', '-')]
+        options_list = ['--' + property_key.replace('_', '-')]
 
         # Get the help text from the model type
-        help_text = parameter_docs.get(name, None)
+        help_text = parameter_docs.get(property_name, None)
 
         # Create the additional command line argument
         arg_ctx.extra(
-            name,
+            property_key,
             required=required,
             options_list=options_list,
             help=help_text)
+
+        model_properties[property_key] = property_name
 
     # Rename the original command line argument and ignore it (i.e. make invisible)
     # so that it does not show up on command line and does not conflict with any other
@@ -69,7 +88,7 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments):
                      options_list=dest_option,
                      # The argument is hidden from the command line, but its value
                      # will be populated by this validator.
-                     validator=get_complex_argument_processor(arguments, dest, model_type))
+                     validator=get_complex_argument_processor(model_properties, dest, model_type))
 
 
 ###############################################

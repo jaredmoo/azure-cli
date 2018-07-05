@@ -227,7 +227,6 @@ def _configure_db_create_params(
             'elastic_pool_id',
             'license_type',
             'max_size_bytes',
-            'name',
             'restore_point_in_time',
             'sample_name',
             'sku',
@@ -392,32 +391,41 @@ def load_arguments(self, _):
                    options_list=['--version', '-v'])
 
     with self.argument_context('sql job step create') as c:
-        c.expand('parameters', JobStep)
+        create_args_for_complex_type(c, 'parameters', JobStep, [
+            'action',
+            'output'
+        ])
 
-        c.expand('action', JobStepAction)
-        c.ignore('type')
-        c.ignore('source')
+        create_args_for_complex_type(c, 'action', JobStepAction, [
+            'value'
+        ])
         c.argument('value', options_list=['--text'])
 
-        c.ignore('execution_options')
-
-        # c.expand('output', JobStepOutput, group_name='Output', renames={
-        #     'resource_group': 'output_resource_group',
-        #     'server': 'output_server',
-        #     'database': 'output_database'
-        # })
-
-        def set_options_list(n):
-            def _patch_action(arg):
-                arg.options_list = n
-                print(arg.options_list)
-            return _patch_action
-
-        c.expand('output', JobStepOutput, group_name='Output', patches={
-            'resource_group': set_options_list(['--output-resource-group']),
-            'server': set_options_list(['--output-server']),
-            'database': set_options_list(['--output-database'])
-        })
+        create_args_for_complex_type(c, 'output', JobStepOutput, [
+            # `server_name` argument is already there in the uri, so when expanding 
+            # `output.server_name` we customize that arg's key to `output_server_name`
+            # so that we have a unique way to refer to it later.
+            ('server_name', 'output_server_name'),
+            'database_name',
+            'schema_name',
+            'table_name',
+        ])
+        output_group_name='Output'
+        c.argument('output_server_name',
+                   options_list=['--output-server'],
+                   required=False,
+                   arg_group=output_group_name)
+        c.argument('database_name',
+                   options_list=['--output-db'],
+                   required=False,
+                   arg_group=output_group_name)
+        c.argument('schema_name',
+                   options_list=['--output-schema'],
+                   arg_group=output_group_name)
+        c.argument('table_name',
+                   options_list=['--output-table'],
+                   required=False,
+                   arg_group=output_group_name)
 
     with self.argument_context('sql job target-group') as c:
         c.argument('target_group_name',
@@ -911,7 +919,6 @@ def load_arguments(self, _):
             c, 'parameters', ElasticPool, [
                 'license_type',
                 'max_size_bytes',
-                'name',
                 'per_database_settings',
                 'tags',
                 'zone_redundant',
