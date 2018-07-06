@@ -373,16 +373,7 @@ class SettableOnceValue:  # pylint: disable=too-few-public-methods
         self._setter_name = setter_name
 
 
-def job_create(
-        client,
-        server_name,
-        resource_group_name,
-        job_agent_name,
-        job_name,
-        description=None,
-        enabled=None,
-        start_time=None,
-        end_time=None,
+def _generate_interval(
         interval=None,
         months=None,
         weeks=None,
@@ -405,6 +396,33 @@ def job_create(
     if minutes:
         final_interval.set('PT{}M'.format(minutes), 'minutes')
 
+    return final_interval
+
+def job_create(
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        job_name,
+        description=None,
+        enabled=None,
+        start_time=None,
+        end_time=None,
+        interval=None,
+        months=None,
+        weeks=None,
+        days=None,
+        hours=None,
+        minutes=None):
+
+    final_interval = _generate_interval(
+        interval,
+        months,
+        weeks,
+        days,
+        hours,
+        minutes)
+
     schedule = JobSchedule()
     schedule.start_time = start_time
     schedule.end_time = end_time
@@ -421,6 +439,61 @@ def job_create(
         description=description,
         schedule=schedule
     )
+
+
+def job_update(
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        job_name,
+        description=None,
+        enabled=None,
+        start_time=None,
+        end_time=None,
+        interval=None,
+        months=None,
+        weeks=None,
+        days=None,
+        hours=None,
+        minutes=None):
+
+    instance = client.get(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        job_name=job_name)
+
+    if description:
+        instance.description = description
+
+    if enabled is not None:
+        instance.schedule.enabled = enabled
+
+    if start_time:
+        instance.schedule.start_time = start_time
+
+    if end_time:
+        instance.schedule.end_time = end_time
+
+    final_interval = _generate_interval(
+        interval,
+        months,
+        weeks,
+        days,
+        hours,
+        minutes)
+
+    if final_interval.value:
+        instance.schedule.interval = final_interval.value
+
+    client.create_or_update(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        job_name=job_name,
+        description=instance.description,
+        schedule=instance.schedule)
 
 
 def job_step_list(

@@ -103,7 +103,7 @@ def load_command_table(self, _):
         g.command('list', 'list_by_agent')
         g.command('show', 'get')
         g.custom_command('create', 'job_create')
-        g.generic_update_command('update')
+        g.custom_command('update', 'job_update',)
         g.command('delete', 'delete')
 
     job_steps_operations = CliCommandType(

@@ -325,10 +325,14 @@ helps['sql elastic-pool op cancel'] = """
 helps['sql job'] = """
     type: group
     short-summary: Manage elastic jobs.
+    long-summary: To get started with elastic jobs, first create an elastic job agent. Then you can define a job and add steps to it.
+                  Each step executes an action against a list of targets (defined by a target group) and uses a credential to connect
+                  to those targets.
     """
 helps['sql job agent'] = """
     type: group
     short-summary: Manage elastic job agents.
+    long-summary: An elastic job agent is linked to a database that is used to store job definitions and execution status.
     """
 helps['sql job agent create'] = """
     type: command
@@ -340,6 +344,19 @@ helps['sql job agent create'] = """
 helps['sql job agent update'] = """
     type: command
     short-summary: Updates an elastic job agent.
+    """
+helps['sql job create'] = """
+    type: command
+    short-summary: Creates an elastic job.
+    examples:
+        - name: Create a job that can be manually executed.
+          text: az sql job create -g mygroup -s myserver -a myagent -n myjob
+        - name: Create a job that will be automatically executed every 5 minutes, and can also be manually executed.
+          text: az sql job create -g mygroup -s myserver -a myagent -n myjob --enabled --minutes 5
+    """
+helps['sql job update'] = """
+    type: command
+    short-summary: Updates an elastic job.
     """
 helps['sql server'] = """
     type: group

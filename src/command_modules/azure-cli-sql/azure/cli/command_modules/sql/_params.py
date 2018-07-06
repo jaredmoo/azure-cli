@@ -317,15 +317,8 @@ def load_arguments(self, _):
         c.argument('job_agent_name',
                    arg_type=job_agent_param_type)
 
-    with self.argument_context('sql job create') as c:
         c.argument('description',
                    help='User-defined description of the job.')
-
-        create_args_for_complex_type(c, 'schedule', JobSchedule, [
-            'enabled',
-            'start_time',
-            'end_time'
-        ])
 
         schedule_arg_group = 'Schedule'
 
@@ -334,8 +327,10 @@ def load_arguments(self, _):
                    arg_group=schedule_arg_group,
                    arg_type=get_three_state_flag())
 
-        c.argument('start_time', arg_group=schedule_arg_group)
-        c.argument('end_time', arg_group=schedule_arg_group)
+        c.argument('start_time',
+                   arg_group=schedule_arg_group)
+        c.argument('end_time',
+                   arg_group=schedule_arg_group)
 
         schedule_interval_arg_group = 'Schedule Interval'
 
@@ -358,6 +353,19 @@ def load_arguments(self, _):
         c.argument('minutes',
                    help='Interval in minutes.',
                    arg_group=schedule_interval_arg_group)
+
+    with self.argument_context('sql job create') as c:
+        create_args_for_complex_type(c, 'schedule', JobSchedule, [
+            'enabled',
+            'start_time',
+            'end_time'
+        ])
+
+    with self.argument_context('sql job update') as c:
+        c.argument('start_time',
+                   help='Schedule start time.')
+        c.argument('end_time',
+                   help='Schedule end time.')
 
     with self.argument_context('sql job agent') as c:
         c.argument('job_agent_name',
