@@ -115,9 +115,9 @@ server_param_type = CLIArgumentType(
 
 job_agent_param_type = CLIArgumentType(
     options_list=['--agent', '-a'],
-    configured_default='sql-agent',
-    help='Name of the Azure SQL Agent. You can configure the default agent using '
-    '`az configure --defaults sql-agent=<name>`',
+    configured_default='sql-job-agent',
+    help='Name of the Elastic Job agent. You can configure the default agent using '
+    '`az configure --defaults sql-job-agent=<name>`',
     # Allow --ids command line argument. id_part=child_name_1 is 2nd name in uri
     id_part='child_name_1')
 
@@ -406,7 +406,7 @@ def load_arguments(self, _):
         c.argument('value', options_list=['--text'])
 
         create_args_for_complex_type(c, 'output', JobStepOutput, [
-            # `server_name` argument is already there in the uri, so when expanding 
+            # `server_name` argument is already there in the uri, so when expanding
             # `output.server_name` we customize that arg's key to `output_server_name`
             # so that we have a unique way to refer to it later.
             ('server_name', 'output_server_name'),

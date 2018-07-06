@@ -322,6 +322,25 @@ helps['sql elastic-pool op cancel'] = """
         - name: Cancel an operation.
           text: az sql elastic-pool op cancel -g mygroup -s myserver -ep myelasticpool -n d2896db1-2ba8-4c84-bac1-387c430cce40
     """
+helps['sql job'] = """
+    type: group
+    short-summary: Manage elastic jobs.
+    """
+helps['sql job agent'] = """
+    type: group
+    short-summary: Manage elastic job agents.
+    """
+helps['sql job agent create'] = """
+    type: command
+    short-summary: Creates an elastic job agent.
+    examples:
+        - name: Create elastic job agent
+          text: az sql job agent create -g mygroup -s myserver -n myagent -d myjobdb
+    """
+helps['sql job agent update'] = """
+    type: command
+    short-summary: Updates an elastic job agent.
+    """
 helps['sql server'] = """
     type: group
     short-summary: Manage SQL servers.
