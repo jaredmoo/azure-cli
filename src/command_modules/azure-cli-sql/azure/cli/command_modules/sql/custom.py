@@ -497,6 +497,30 @@ def job_update(
         schedule=instance.schedule)
 
 
+def job_credential_update(
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        credential_name,
+        password,
+        username=None):
+
+    instance = client.get(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        credential_name=credential_name)
+
+    client.create_or_update(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        credential_name=credential_name,
+        username=username or instance.username,
+        schedule=password)
+
+
 def job_step_list(
         client,
         server_name,

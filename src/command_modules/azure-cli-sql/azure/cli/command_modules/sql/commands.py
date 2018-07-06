@@ -82,7 +82,7 @@ def load_command_table(self, _):
         g.command('list', 'list_by_agent')
         g.command('show', 'get')
         g.command('create', 'create_or_update')
-        g.generic_update_command('update')
+        g.custom_command('update', 'job_credential_update')
         g.command('delete', 'delete')
 
     job_executions_operations = CliCommandType(

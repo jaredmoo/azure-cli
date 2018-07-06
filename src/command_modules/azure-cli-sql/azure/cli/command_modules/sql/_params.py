@@ -385,6 +385,10 @@ def load_arguments(self, _):
         c.argument('username', options_list=['--user', '-u'])
         c.argument('password', options_list=['--password', '-p'])
 
+    with self.argument_context('sql job credential update') as c:
+        c.argument('username', help='The credential user name.')
+        c.argument('password', help='The credential password.')
+
     with self.argument_context('sql job ex') as c:
         c.argument('job_name',
                    arg_type=job_param_type)

@@ -326,8 +326,6 @@ helps['sql job'] = """
     type: group
     short-summary: Manage elastic jobs.
     long-summary: To get started with elastic jobs, first create an elastic job agent. Then you can define a job and add steps to it.
-                  Each step executes an action against a list of targets (defined by a target group) and uses a credential to connect
-                  to those targets.
     """
 helps['sql job agent'] = """
     type: group
@@ -353,6 +351,23 @@ helps['sql job create'] = """
           text: az sql job create -g mygroup -s myserver -a myagent -n myjob
         - name: Create a job that will be automatically executed every 5 minutes, and can also be manually executed.
           text: az sql job create -g mygroup -s myserver -a myagent -n myjob --enabled --minutes 5
+    """
+helps['sql job credential'] = """
+    type: group
+    short-summary: Manage elastic job credentials.
+    long-summary: Credentials are used to connect to targets during job execution.
+    """
+helps['sql job credential create'] = """
+    type: command
+    examples:
+        - name: Create a credential.
+          text: az sql job credential create -g mygroup -s myserver -a myagent -n mycredential -u user1 -p pa$$w0rd
+    """
+helps['sql job step'] = """
+    type: group
+    short-summary: Manage elastic job steps.
+    long-summary: Each step executes an action against a list of targets (defined by a target group) and uses a credential to connect
+                  to those targets.
     """
 helps['sql job update'] = """
     type: command
