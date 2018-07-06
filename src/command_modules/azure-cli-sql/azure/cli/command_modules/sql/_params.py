@@ -435,7 +435,7 @@ def load_arguments(self, _):
                    required=False)
 
         create_args_for_complex_type(c, 'execution_options', JobStepExecutionOptions, [
-            'timeout_seconds', # TODO: Use size converter?
+            'timeout_seconds',  # TODO: Use size converter?
             'retry_attempts',
             'initial_retry_interval_seconds',
             'maximum_retry_interval_seconds',
