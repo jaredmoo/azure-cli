@@ -99,11 +99,9 @@ class SizeWithUnitConverter(object):  # pylint: disable=too-few-public-methods
             self.unit,
             ', '.join(sorted(self.unit_map, key=self.unit_map.__getitem__)))
 
-
 #####
 #           Reusable param type definitions
 #####
-
 
 sku_arg_group = 'Performance Level'
 
@@ -408,14 +406,30 @@ def load_arguments(self, _):
     with self.argument_context('sql job step create') as c:
         create_args_for_complex_type(c, 'parameters', JobStep, [
             'action',
+            'credential',
             'execution_options',
+            'step_id',
+            'target_group',
             'output'
         ])
 
+        action_arg_group = 'Action'
         create_args_for_complex_type(c, 'action', JobStepAction, [
             'value'
         ])
-        c.argument('value', options_list=['--text'])
+        c.argument('value', 
+                   arg_group=action_arg_group,
+                   options_list=['--text'])
+        
+        c.argument('credential',
+                   arg_group=action_arg_group)
+
+        c.argument('target_group',
+                   arg_group=action_arg_group)
+
+        sequence_arg_group = 'Sequencing'
+        c.argument('step_id',
+                   arg_group=sequence_arg_group)
 
         create_args_for_complex_type(c, 'output', JobStepOutput, [
             # `server_name` argument is already there in the uri, so when expanding
@@ -425,7 +439,8 @@ def load_arguments(self, _):
             'database_name',
             'schema_name',
             'table_name',
-        ], arg_group='Outout')
+            ('credential', 'output_credential')
+        ], arg_group='Output')
         c.argument('output_server_name',
                    options_list=['--output-server'],
                    required=False)
@@ -437,9 +452,11 @@ def load_arguments(self, _):
         c.argument('table_name',
                    options_list=['--output-table'],
                    required=False)
+        c.argument('output_credential',
+                   required=False)
 
         create_args_for_complex_type(c, 'execution_options', JobStepExecutionOptions, [
-            'timeout_seconds',  # TODO: Use size converter?
+            'timeout_seconds',  # TODO: Implement convenient converter for minutes/hours?
             'retry_attempts',
             'initial_retry_interval_seconds',
             'maximum_retry_interval_seconds',
