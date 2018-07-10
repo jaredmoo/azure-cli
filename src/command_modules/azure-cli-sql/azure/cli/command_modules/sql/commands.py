@@ -94,6 +94,7 @@ def load_command_table(self, _):
 
     with self.command_group('sql job ex', job_executions_operations, client_factory=get_sql_job_executions_operations) as g:
         g.command('list', 'list_by_agent', no_wait_param='raw')
+        g.command('cancel', 'cancel')
 
     jobs_operations = CliCommandType(
         operations_tmpl='azure.mgmt.sql.operations.jobs_operations#JobsOperations.{}',
