@@ -423,10 +423,10 @@ def load_arguments(self, _):
         create_args_for_complex_type(c, 'action', JobStepAction, [
             'value'
         ])
-        c.argument('value', 
+        c.argument('value',
                    arg_group=action_arg_group,
                    options_list=['--text'])
-        
+
         c.argument('credential',
                    arg_group=action_arg_group)
 

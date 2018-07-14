@@ -84,6 +84,14 @@ def get_sql_job_executions_operations(cli_ctx, _):
     return get_sql_management_client(cli_ctx).job_executions
 
 
+def get_sql_job_step_executions_operations(cli_ctx, _):
+    return get_sql_management_client(cli_ctx).job_step_executions
+
+
+def get_sql_job_target_executions_operations(cli_ctx, _):
+    return get_sql_management_client(cli_ctx).job_target_executions
+
+
 def get_sql_job_steps_operations(cli_ctx, _):
     return get_sql_management_client(cli_ctx).job_steps
 

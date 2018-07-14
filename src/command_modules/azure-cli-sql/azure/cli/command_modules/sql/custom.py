@@ -39,6 +39,8 @@ from azure.mgmt.sql.models import (
 
 from ._util import (
     get_sql_capabilities_operations,
+    get_sql_job_step_executions_operations,
+    get_sql_job_target_executions_operations,
     get_sql_managed_instances_operations,
     get_sql_servers_operations,
 )
@@ -521,6 +523,48 @@ def job_credential_update(
         schedule=password)
 
 
+def job_ex_list(
+        cmd,
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        job_name=None,
+        job_execution_id=None,
+        step_name=None,
+        top=None):
+
+    if job_name:
+        if job_execution_id:
+            if step_name:
+                # List by step
+                large_result = False
+                func = get_sql_job_target_executions_operations(cmd.cli_ctx, None).list_by_job_execution
+            else:
+                # List by job execution
+                large_result = False
+                func = get_sql_job_step_executions_operations(cmd.cli_ctx, None).list_by_job_execution
+        else:
+            # List by job
+            large_result = True
+            func = client.list_by_job
+    else:
+        # List by agent
+        large_result = True
+        func = client.list_by_agent
+
+    if large_result and not top:
+        raise CLIError('Must be limited')  # TODO - better error message
+
+    return func(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        job_name=job_name,
+        step_name=step_name,
+        job_execution_id=job_execution_id,
+        top=top)
+
 def job_step_list(
         client,
         server_name,
@@ -537,7 +581,7 @@ def job_step_list(
             job_name=job_name,
             job_version=job_version)
 
-    return client.list_by_server(
+    return client.list_by_job(
         server_name=server_name,
         resource_group_name=resource_group_name,
         job_agent_name=job_agent_name,

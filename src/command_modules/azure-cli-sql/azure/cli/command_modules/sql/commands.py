@@ -15,6 +15,7 @@ from ._format import (
     elastic_pool_table_format,
     elastic_pool_edition_table_format,
     firewall_rule_table_format,
+    job_ex_table_format,
     server_table_format,
     usage_table_format,
     LongRunningOperationResultTransform,
@@ -91,10 +92,14 @@ def load_command_table(self, _):
         client_factory=get_sql_job_executions_operations)
 
     with self.command_group('sql job', job_executions_operations, client_factory=get_sql_job_executions_operations) as g:
-        g.command('start', 'create', no_wait_param='raw')
+        g.command('start', 'create', no_wait_param='raw',
+                  table_transformer=job_ex_table_format)
 
     with self.command_group('sql job ex', job_executions_operations, client_factory=get_sql_job_executions_operations) as g:
-        g.command('list', 'list_by_agent', no_wait_param='raw')
+        g.custom_command('list', 'job_ex_list',
+                         table_transformer=job_ex_table_format)
+        g.custom_command('show', 'job_ex_show',
+                         table_transformer=job_ex_table_format)
         g.command('cancel', 'cancel')
 
     jobs_operations = CliCommandType(

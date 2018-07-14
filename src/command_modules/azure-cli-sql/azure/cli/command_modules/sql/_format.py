@@ -279,6 +279,37 @@ def _elastic_pool_edition_table_format(editions):
             ])
 
 ###############################################
+#                sql job                      #
+###############################################
+
+
+def job_ex_table_format(result):
+    '''
+    Formats a single or list of job executions as summary results for display with "-o table".
+    '''
+
+    def _job_ex_table_format(result):
+        '''
+        Formats a server firewall rule as summary results for display with "-o table".
+        '''
+        from collections import OrderedDict
+
+        id_segments = result['id'].split('/')
+        def _get_segment(i):
+            return id_segments[i] if i < len(id_segments) else None
+
+        return OrderedDict([
+            ('jobName', _get_segment(12)),
+            ('jobExecutionId', _get_segment(14)),
+            ('stepName', _get_segment(16)),
+            ('targetId', _get_segment(18)),
+            ('lastMessage', result['lastMessage']),
+        ])
+
+    return _apply_format(result, _job_ex_table_format)
+
+
+###############################################
 #                sql server                   #
 ###############################################
 
