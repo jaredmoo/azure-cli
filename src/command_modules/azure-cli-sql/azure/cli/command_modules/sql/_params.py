@@ -227,7 +227,7 @@ def _configure_db_create_params(
 
     # Create args that will be used to build up the Database object
     create_args_for_complex_type(
-        arg_ctx, 'parameters', Database, [
+        arg_ctx, None, Database, [
             'catalog_collation',
             'collation',
             'elastic_pool_id',
@@ -451,7 +451,8 @@ def load_arguments(self, _):
         create_args_for_complex_type(c, 'output', JobStepOutput, [
             # `server_name` argument is already there in the uri, so when expanding
             # `output.server_name` we customize that arg's key to `output_server_name`
-            # so that we have a unique way to refer to it later.
+            # so that we have a unique way to refer to it later. Similar issue for
+            # `credential`.
             ('server_name', 'output_server_name'),
             'database_name',
             'schema_name',

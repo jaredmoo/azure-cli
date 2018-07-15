@@ -33,8 +33,6 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments, arg_group
             :return: The argument of specific type.
             '''
 
-            raise BaseException('where are we?')
-
             # Get list of keys that are in the argparse namespace which match
             # the argparse names of properties that we are looking for
             matched_names = [k for k in vars(namespace) if k in model_properties]
@@ -90,17 +88,16 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments, arg_group
 
         model_properties[property_key] = property_name
 
-    # Rename the original command line argument and ignore it (i.e. make invisible)
-    # so that it does not show up on command line and does not conflict with any other
-    # arguments.
-    arg_ctx.argument(dest,
-                     arg_type=ignore_type,
-                     options_list=['--__{}'.format(dest.upper())],
-                     # The argument is hidden from the command line, but its value
-                     # will be populated by this validator.
-                     validator=get_complex_argument_processor(model_properties, dest, model_type))
-    
-    print(dir(arg_ctx))
+    if dest:
+        # Rename the original command line argument and ignore it (i.e. make invisible)
+        # so that it does not show up on command line and does not conflict with any other
+        # arguments.
+        arg_ctx.argument(dest,
+                        arg_type=ignore_type,
+                        options_list=['--__{}'.format(dest.upper())],
+                        # The argument is hidden from the command line, but its value
+                        # will be populated by this validator.
+                        validator=get_complex_argument_processor(model_properties, dest, model_type))
 
 
 def convert_to_resource_id(

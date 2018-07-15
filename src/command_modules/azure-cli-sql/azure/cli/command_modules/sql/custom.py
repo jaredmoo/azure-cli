@@ -408,9 +408,7 @@ def job_create(
         job_agent_name,
         job_name,
         description=None,
-        enabled=None,
-        start_time=None,
-        end_time=None,
+        schedule=None,
         interval=None,
         months=None,
         weeks=None,
@@ -426,10 +424,6 @@ def job_create(
         hours,
         minutes)
 
-    schedule = JobSchedule()
-    schedule.start_time = start_time
-    schedule.end_time = end_time
-    schedule.enabled = enabled
     schedule.interval = final_interval.value
     if schedule.interval:
         schedule.type = JobScheduleType.recurring.value
