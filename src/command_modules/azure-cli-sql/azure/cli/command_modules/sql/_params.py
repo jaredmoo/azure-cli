@@ -411,35 +411,12 @@ def load_arguments(self, _):
                    options_list=['--version', '-v'])
 
     with self.argument_context('sql job step create') as c:
-        create_args_for_complex_type(c, 'parameters', JobStep, [
-            'action',
-            'credential',
-            'execution_options',
-            'step_id',
-            'target_group',
-            'output'
-        ])
-
         action_arg_group = 'Action'
-        create_args_for_complex_type(c, 'action', JobStepAction, [
-            'value'
-        ])
-        c.argument('value',
-                   arg_group=action_arg_group,
-                   options_list=['--text'])
+        c.argument('text',
+                   arg_group=action_arg_group)
 
         c.argument('credential',
-                   arg_group=action_arg_group,
-                   validator=convert_to_resource_id(
-                       'credential',
-                       'Microsoft.Sql',
-                       'servers',
-                       'server_name',
-                       'jobAgents',
-                       'job_agent_name',
-                       'credentials',
-                       'credential'
-                   ))
+                   arg_group=action_arg_group)
 
         c.argument('target_group',
                    arg_group=action_arg_group)
@@ -448,30 +425,20 @@ def load_arguments(self, _):
         c.argument('step_id',
                    arg_group=sequence_arg_group)
 
-        create_args_for_complex_type(c, 'output', JobStepOutput, [
-            # `server_name` argument is already there in the uri, so when expanding
-            # `output.server_name` we customize that arg's key to `output_server_name`
-            # so that we have a unique way to refer to it later. Similar issue for
-            # `credential`.
-            ('server_name', 'output_server_name'),
-            'database_name',
-            'schema_name',
-            'table_name',
-            ('credential', 'output_credential')
-        ], arg_group='Output')
         c.argument('output_server_name',
                    options_list=['--output-server'],
-                   required=False)
+                   arg_group='Output')
         c.argument('database_name',
                    options_list=['--output-db'],
-                   required=False)
+                   arg_group='Output')
         c.argument('schema_name',
-                   options_list=['--output-schema'])
+                   options_list=['--output-schema'],
+                   arg_group='Output')
         c.argument('table_name',
                    options_list=['--output-table'],
-                   required=False)
+                   arg_group='Output')
         c.argument('output_credential',
-                   required=False)
+                   arg_group='Output')
 
         create_args_for_complex_type(c, 'execution_options', JobStepExecutionOptions, [
             'timeout_seconds',  # TODO: Implement convenient converter for minutes/hours?

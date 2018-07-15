@@ -23,6 +23,8 @@ from azure.mgmt.sql.models import (
     IdentityType,
     JobSchedule,
     JobScheduleType,
+    JobStep,
+    JobStepAction,
     JobTarget,
     JobTargetGroupMembershipType,
     JobTargetType,
@@ -558,6 +560,64 @@ def job_ex_list(
         step_name=step_name,
         job_execution_id=job_execution_id,
         top=top)
+
+
+def job_step_create(
+        cmd,
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        job_name,
+        step_name,
+        text,
+        credential,
+        target_group,
+        step_id=None,
+        execution_options=None):
+
+    from msrestazure.tools import resource_id
+    from azure.cli.core.commands.client_factory import get_subscription_id
+
+    action = JobStepAction(value=text)
+
+    credential = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=resource_group_name,
+            namespace='Microsoft.Sql',
+            type='servers',
+            name=server_name,
+            child_type_1='jobAgents',
+            child_name_1=job_agent_name,
+            child_type_2='credentials',
+            child_name_2=credential)
+
+    target_group = resource_id(
+            subscription=get_subscription_id(cmd.cli_ctx),
+            resource_group=resource_group_name,
+            namespace='Microsoft.Sql',
+            type='servers',
+            name=server_name,
+            child_type_1='jobAgents',
+            child_name_1=job_agent_name,
+            child_type_2='targetGroups',
+            child_name_2=target_group)
+
+    job_step = JobStep(
+        action=action,
+        credential=credential,
+        target_group=target_group,
+        step_id=step_id,
+        execution_options=execution_options)
+
+    return client.create_or_update(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        job_name=job_name,
+        step_name=step_name,
+        parameters=job_step)
+
 
 def job_step_list(
         client,

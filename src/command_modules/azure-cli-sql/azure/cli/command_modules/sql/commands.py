@@ -120,7 +120,7 @@ def load_command_table(self, _):
     with self.command_group('sql job step', job_steps_operations, client_factory=get_sql_job_steps_operations) as g:
         g.custom_command('list', 'job_step_list')
         g.command('show', 'get')
-        g.command('create', 'create_or_update')
+        g.custom_command('create', 'job_step_create')
         g.generic_update_command('update')
         g.command('delete', 'delete')
 

@@ -35,10 +35,10 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments, arg_group
 
             # Get list of keys that are in the argparse namespace which match
             # the argparse names of properties that we are looking for
-            matched_names = [k for k in vars(namespace) if k in model_properties]
+            matched_keys = [k for k in vars(namespace) if k in model_properties]
 
             # For each key, map the key's model property name to the value in the namespace
-            properties = dict((model_properties[k], getattr(namespace, k)) for k in matched_names)
+            properties = dict((model_properties[k], getattr(namespace, k)) for k in matched_keys)
 
             # Only continue if any of the values were specified by the user (i.e. are not None)
             if any(properties.values()):
@@ -46,11 +46,16 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments, arg_group
                 logger.debug('building "{}" with values "{}"'.format(assigned_arg, properties))
                 model = model_type(**properties)
 
-                # Add the complex model back to the argparse namespace
+                # Add the model object to the argparse namespace
                 setattr(namespace, assigned_arg, model)
             
             else:
                 logger.debug('not building "{}" because none of "{}" were specified'.format(assigned_arg, properties.keys()))
+
+            # Delete all the keys that were build into the model
+            for k in matched_keys:
+                logger.debug('deleting key "{}"'.format(k))
+                delattr(namespace, k)
 
         return _expansion_validator_impl
 
