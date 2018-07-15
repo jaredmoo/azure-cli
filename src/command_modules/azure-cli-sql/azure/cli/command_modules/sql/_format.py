@@ -303,6 +303,9 @@ def job_ex_table_format(result):
             ('jobExecutionId', _get_segment(14)),
             ('stepName', _get_segment(16)),
             ('targetId', _get_segment(18)),
+            ('targetServerName', result['target']['serverName'] if result['target'] else None),
+            ('targetDatabaseName', result['target']['databaseName'] if result['target'] else None),
+            ('lifecycle', result['lifecycle']),
             ('lastMessage', result['lastMessage']),
         ])
 

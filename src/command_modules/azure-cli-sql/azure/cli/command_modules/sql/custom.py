@@ -541,10 +541,15 @@ def job_ex_list(
                 large_result = False
                 func = get_sql_job_step_executions_operations(cmd.cli_ctx, None).list_by_job_execution
         else:
+            if step_name:
+                raise CLIError('In order to specify step name, job execution id must be specified.')
             # List by job
             large_result = True
             func = client.list_by_job
     else:
+        if job_execution_id or step_name:
+            raise CLIError('In order to specify job execution id and/or step name, job name must be specified.')
+
         # List by agent
         large_result = True
         func = client.list_by_agent
