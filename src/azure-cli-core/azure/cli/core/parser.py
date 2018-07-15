@@ -94,6 +94,7 @@ class AzCliCommandParser(CLICommandParser):
             argument_validators = []
             argument_groups = {}
             for _, arg in metadata.arguments.items():
+                print(arg.name)
                 # don't add deprecated arguments to the parser
                 deprecate_info = arg.type.settings.get('deprecate_info', None)
                 if deprecate_info and deprecate_info.expired():

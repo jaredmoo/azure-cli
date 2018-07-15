@@ -4,6 +4,9 @@
 # --------------------------------------------------------------------------------------------
 
 from azure.cli.core.util import CLIError
+from knack.log import get_logger
+
+logger = get_logger(__name__)
 
 # Important note: if cmd validator exists, then individual param validators will not be
 # executed. See C:\git\azure-cli\env\lib\site-packages\knack\invocation.py `def _validation`
@@ -30,6 +33,8 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments, arg_group
             :return: The argument of specific type.
             '''
 
+            raise BaseException('where are we?')
+
             # Get list of keys that are in the argparse namespace which match
             # the argparse names of properties that we are looking for
             matched_names = [k for k in vars(namespace) if k in model_properties]
@@ -37,11 +42,17 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments, arg_group
             # For each key, map the key's model property name to the value in the namespace
             properties = dict((model_properties[k], getattr(namespace, k)) for k in matched_names)
 
-            # Construct the complex model type
-            model = model_type(**properties)
+            # Only continue if any of the values were specified by the user (i.e. are not None)
+            if any(properties.values()):
+                # Construct the complex model type
+                logger.debug('building "{}" with values "{}"'.format(assigned_arg, properties))
+                model = model_type(**properties)
 
-            # Add the complex model back to the argparse namespace
-            setattr(namespace, assigned_arg, model)
+                # Add the complex model back to the argparse namespace
+                setattr(namespace, assigned_arg, model)
+            
+            else:
+                logger.debug('not building "{}" because none of "{}" were specified'.format(assigned_arg, properties.keys()))
 
         return _expansion_validator_impl
 
@@ -82,14 +93,49 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments, arg_group
     # Rename the original command line argument and ignore it (i.e. make invisible)
     # so that it does not show up on command line and does not conflict with any other
     # arguments.
-    dest_option = ['--__{}'.format(dest.upper())]
-
     arg_ctx.argument(dest,
                      arg_type=ignore_type,
-                     options_list=dest_option,
+                     options_list=['--__{}'.format(dest.upper())],
                      # The argument is hidden from the command line, but its value
                      # will be populated by this validator.
                      validator=get_complex_argument_processor(model_properties, dest, model_type))
+    
+    print(dir(arg_ctx))
+
+
+def convert_to_resource_id(
+        dest,
+        provider_namespace,
+        type,
+        name_key,
+        child_type_1,
+        child_name_1_key,
+        child_type_2,
+        child_name_2_key):
+
+    def _convert(cmd, namespace):
+        from msrestazure.tools import resource_id, is_valid_resource_id
+        from azure.cli.core.commands.client_factory import get_subscription_id
+
+        value = getattr(namespace, dest)
+        if is_valid_resource_id(value):
+            # Value is already a resource id, so leave it be.
+            logger.debug('Property "{}" value "{}" is already a resource id'.format(dest, value))
+            pass
+        else:
+            new_value = resource_id(
+                subscription=get_subscription_id(cmd.cli_ctx),
+                resource_group=namespace.resource_group_name,
+                namespace=provider_namespace,
+                type=type,
+                child_type_1=child_type_1,
+                child_name_1=getattr(namespace, child_name_1_key),
+                child_type_2=child_type_2,
+                child_name_2=getattr(namespace, child_name_2_key))
+            logger.debug('Replacing property "{}" value "{}" with "{}"'.format(dest, value, new_value))
+            setattr(namespace, dest, new_value)
+
+    return _convert
 
 
 ###############################################

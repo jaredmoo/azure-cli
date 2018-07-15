@@ -61,6 +61,7 @@ from .custom import (
 
 from ._validators import (
     create_args_for_complex_type,
+    convert_to_resource_id,
     validate_managed_instance_storage_size,
     validate_subnet
 )
@@ -428,7 +429,17 @@ def load_arguments(self, _):
                    options_list=['--text'])
 
         c.argument('credential',
-                   arg_group=action_arg_group)
+                   arg_group=action_arg_group,
+                   validator=convert_to_resource_id(
+                       'credential',
+                       'Microsoft.Sql',
+                       'servers',
+                       'server_name',
+                       'jobAgents',
+                       'job_agent_name',
+                       'credentials',
+                       'credential'
+                   ))
 
         c.argument('target_group',
                    arg_group=action_arg_group)

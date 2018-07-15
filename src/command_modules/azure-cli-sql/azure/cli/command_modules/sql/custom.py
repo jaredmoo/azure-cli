@@ -672,10 +672,10 @@ def _job_target_sql_db_parse(s):
                        "(or '~server_name.database_name' to exclude)."
                        .format(s))
 
-    t = JobTarget(JobTargetType.sql_database.value)
-    t.membership_type = membership_type
-    t.server_name = segments[0]
-    t.database_name = segments[1]
+    t = JobTarget(type=JobTargetType.sql_database.value,
+                  membership_type=membership_type,
+                  server_name=segments[0],
+                  database_name=segments[1])
 
     return t
 
@@ -691,9 +691,9 @@ def _job_target_sql_server_parse(job_agent_id, s):
         raise CLIError("Invalid server target '{}', expected format 'server_name(refresh_credential_name)'."
                        .format(s))
 
-    t = JobTarget(JobTargetType.sql_server.value)
-    t.server_name = segments[0]
-    t.refresh_credential = JobCredentialIdentity(job_agent_id, credential_name).id()
+    t = JobTarget(type=JobTargetType.sql_server.value,
+                  server_name=segments[0],
+                  refresh_credential = JobCredentialIdentity(job_agent_id, credential_name).id())
 
     return t
 
@@ -712,11 +712,11 @@ def _job_target_sql_elastic_pool_parse(job_agent_id, s):
                        "'~server_name.pool_name(refresh_credential_name)' to exclude)."
                        .format(s))
 
-    t = JobTarget(JobTargetType.sql_elastic_pool.value)
-    t.membership_type = membership_type
-    t.server_name = segments[0]
-    t.elastic_pool_name = segments[1]
-    t.refresh_credential = JobCredentialIdentity(job_agent_id, credential_name).id()
+    t = JobTarget(type=JobTargetType.sql_elastic_pool.value,
+                  membership_type=membership_type,
+                  server_name=segments[0],
+                  elastic_pool_name=segments[1],
+                  refresh_credential=JobCredentialIdentity(job_agent_id, credential_name).id())
 
     return t
 
@@ -733,11 +733,11 @@ def _job_target_sql_shard_map_parse(job_agent_id, s):
                        "'server_name.database_name.shard_map_name(refresh_credential_name)'."
                        .format(s))
 
-    t = JobTarget(JobTargetType.sql_shard_map.value)
-    t.server_name = segments[0]
-    t.database_name = segments[1]
-    t.shard_map_name = segments[2]
-    t.refresh_credential = JobCredentialIdentity(job_agent_id, credential_name).id()
+    t = JobTarget(type=JobTargetType.sql_shard_map.value,
+                  server_name=segments[0],
+                  database_name=segments[1],
+                  shard_map_name=segments[2],
+                  refresh_credential=JobCredentialIdentity(job_agent_id, credential_name).id())
 
     return t
 
