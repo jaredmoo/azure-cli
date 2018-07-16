@@ -705,7 +705,7 @@ def _parse_segments_and_credential(s):
 def _parse_segments(s):
     logger.debug('_parse_segments: %s', s)
 
-    (prefix, _, suffix) = s.partition('(')
+    (prefix, _, suffix) = s.partition('/')
 
     segments = []
     while prefix:
@@ -725,7 +725,7 @@ def _parse_segment(s):
 def _parse_credential(s):
     logger.debug('_parse_credential: %s', s)
 
-    (prefix, _, suffix) = s.partition(')')
+    (prefix, _, suffix) = s.partition('/')
     return (prefix, suffix)
 
 
@@ -758,7 +758,7 @@ def _job_target_sql_server_parse(job_agent_id, s):
 
     logger.debug('_job_target_sql_server_parse outcome: %s %s %s', segments, credential_name, suffix)
     if len(segments) != 1 or not credential_name or suffix:
-        raise CLIError("Invalid server target '{}', expected format 'server_name(refresh_credential_name)'."
+        raise CLIError("Invalid server target '{}', expected format 'server_name/refresh_credential_name'."
                        .format(s))
 
     t = JobTarget(type=JobTargetType.sql_server.value,
@@ -778,8 +778,8 @@ def _job_target_sql_elastic_pool_parse(job_agent_id, s):
     logger.debug('_job_target_sql_elastic_pool_parse outcome: %s %s %s', segments, credential_name, suffix)
     if len(segments) != 2 or not credential_name or suffix:
         raise CLIError("Invalid elastic pool '{}', expected format "
-                       "'server_name.pool_name(refresh_credential_name)' (or "
-                       "'~server_name.pool_name(refresh_credential_name)' to exclude)."
+                       "'server_name.pool_name/refresh_credential_name' (or "
+                       "'~server_name.pool_name/refresh_credential_name' to exclude)."
                        .format(s))
 
     t = JobTarget(type=JobTargetType.sql_elastic_pool.value,
@@ -800,7 +800,7 @@ def _job_target_sql_shard_map_parse(job_agent_id, s):
     logger.debug('_job_target_sql_shard_map_parse outcome: %s %s %s', segments, credential_name, suffix)
     if len(segments) != 3 or not credential_name or rest:
         raise CLIError("Invalid shard map target '{}', expected format "
-                       "'server_name.database_name.shard_map_name(refresh_credential_name)'."
+                       "'server_name.database_name.shard_map_name/refresh_credential_name'."
                        .format(s))
 
     t = JobTarget(type=JobTargetType.sql_shard_map.value,
