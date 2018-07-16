@@ -98,11 +98,11 @@ def create_args_for_complex_type(arg_ctx, dest, model_type, arguments, arg_group
         # so that it does not show up on command line and does not conflict with any other
         # arguments.
         arg_ctx.argument(dest,
-                        arg_type=ignore_type,
-                        options_list=['--__{}'.format(dest.upper())],
-                        # The argument is hidden from the command line, but its value
-                        # will be populated by this validator.
-                        validator=get_complex_argument_processor(model_properties, dest, model_type))
+                         arg_type=ignore_type,
+                         options_list=['--__{}'.format(dest.upper())],
+                         # The argument is hidden from the command line, but its value
+                         # will be populated by this validator.
+                         validator=get_complex_argument_processor(model_properties, dest, model_type))
 
 
 ###############################################

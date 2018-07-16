@@ -315,6 +315,7 @@ def job_ex_table_format(result):
         from collections import OrderedDict
 
         id_segments = result['id'].split('/')
+
         def _get_segment(i):
             return id_segments[i] if i < len(id_segments) else None
 

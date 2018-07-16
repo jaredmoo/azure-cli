@@ -2335,54 +2335,55 @@ class SqlElasticJobScenarioTest(ScenarioTest):
     @SqlServerPreparer(location='centralus')
     @AllowLargeResponse()
     def test_sql_elastic_jobs(self, resource_group, resource_group_location, server):
-        db = "db1"
-        agent = "agent1"
+        db_name = "db1"
+        agent_name = "agent1"
 
         # Create db
         self.cmd('sql db create -g {} -s {} -n {} --service-objective S0'
-                 .format(resource_group, server, db))
+                 .format(resource_group, server, db_name))
 
         # Create agent
         self.cmd('sql job agent create -g {} -s {} -d {} -n {}'
-                 .format(resource_group, server, db, agent),
+                 .format(resource_group, server, db_name, agent_name),
                  checks=[
-                     JMESPathCheck('name', 'agent'),
+                     JMESPathCheck('name', agent_name),
                      JMESPathCheck('state', 'Ready'),
                      JMESPathCheck('location', resource_group_location)])
 
         # Update agent by setting tags
-        self.cmd('sql job agent update -g {} -s {} -d {} -n {} --set tags.tag1=value1'
-                 .format(resource_group, server, db, agent),
+        self.cmd('sql job agent update -g {} -s {} -n {} --set tags.key1=value1'
+                 .format(resource_group, server, agent_name),
                  checks=[
-                     JMESPathCheck('name', 'agent'),
+                     JMESPathCheck('name', agent_name),
                      JMESPathCheck('state', 'Ready'),
                      JMESPathCheck('location', resource_group_location),
                      JMESPathCheck('tags.key1', 'value1')])
 
         # Show agent
-        self.cmd('sql job agent show -g {} -s {} -n {}'
-                 .format(resource_group, server, db, agent),
+        agent = self.cmd('sql job agent show -g {} -s {} -n {}'
+                 .format(resource_group, server, agent_name),
                  checks=[
-                     JMESPathCheck('name', 'agent'),
+                     JMESPathCheck('name', agent_name),
                      JMESPathCheck('state', 'Ready'),
-                     JMESPathCheck('location', resource_group_location)])
+                     JMESPathCheck('location', resource_group_location)]).get_output_in_json()
 
-        # Show agent with table format
-        self.cmd('sql job agent show -g {} -s {} -n {} -o table'
-                 .format(resource_group, server, db, agent))
+        # Show agent with table format and by resource id
+        self.cmd('sql job agent show --id {} -o table'
+                 .format(agent['id']))
 
         # List agents
         self.cmd('sql job agent list -g {} -s {}'
-                 .format(resource_group, server, db, agent),
+                 .format(resource_group, server),
                  checks=[
                      JMESPathCheck('length(@)', 1),
-                     JMESPathCheck('[0].name', 'agent'),
+                     JMESPathCheck('[0].name', agent_name),
                      JMESPathCheck('[0].state', 'Ready'),
                      JMESPathCheck('[0].location', resource_group_location)])
 
         # Delete agent
         self.cmd('sql job agent delete -g {} -s {} -n {}'
-                 .format(resource_group, server, agent))
+                 .format(resource_group, server, agent_name))
+
 
 class SqlZoneResilienceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(location='centralus')

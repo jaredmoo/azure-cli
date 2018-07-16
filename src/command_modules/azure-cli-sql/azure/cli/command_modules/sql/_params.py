@@ -99,6 +99,7 @@ class SizeWithUnitConverter(object):  # pylint: disable=too-few-public-methods
             self.unit,
             ', '.join(sorted(self.unit_map, key=self.unit_map.__getitem__)))
 
+
 #####
 #           Reusable param type definitions
 #####

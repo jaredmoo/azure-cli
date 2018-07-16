@@ -598,26 +598,26 @@ def job_step_create(
     action = JobStepAction(value=text)
 
     credential = resource_id(
-            subscription=get_subscription_id(cmd.cli_ctx),
-            resource_group=resource_group_name,
-            namespace='Microsoft.Sql',
-            type='servers',
-            name=server_name,
-            child_type_1='jobAgents',
-            child_name_1=job_agent_name,
-            child_type_2='credentials',
-            child_name_2=credential)
+        subscription=get_subscription_id(cmd.cli_ctx),
+        resource_group=resource_group_name,
+        namespace='Microsoft.Sql',
+        type='servers',
+        name=server_name,
+        child_type_1='jobAgents',
+        child_name_1=job_agent_name,
+        child_type_2='credentials',
+        child_name_2=credential)
 
     target_group = resource_id(
-            subscription=get_subscription_id(cmd.cli_ctx),
-            resource_group=resource_group_name,
-            namespace='Microsoft.Sql',
-            type='servers',
-            name=server_name,
-            child_type_1='jobAgents',
-            child_name_1=job_agent_name,
-            child_type_2='targetGroups',
-            child_name_2=target_group)
+        subscription=get_subscription_id(cmd.cli_ctx),
+        resource_group=resource_group_name,
+        namespace='Microsoft.Sql',
+        type='servers',
+        name=server_name,
+        child_type_1='jobAgents',
+        child_name_1=job_agent_name,
+        child_type_2='targetGroups',
+        child_name_2=target_group)
 
     job_step = JobStep(
         action=action,
@@ -763,7 +763,7 @@ def _job_target_sql_server_parse(job_agent_id, s):
 
     t = JobTarget(type=JobTargetType.sql_server.value,
                   server_name=segments[0],
-                  refresh_credential = JobCredentialIdentity(job_agent_id, credential_name).id())
+                  refresh_credential=JobCredentialIdentity(job_agent_id, credential_name).id())
 
     return t
 
