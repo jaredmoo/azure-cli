@@ -306,7 +306,8 @@ def job_ex_table_format(result):
             ('targetServerName', result['target']['serverName'] if result['target'] else None),
             ('targetDatabaseName', result['target']['databaseName'] if result['target'] else None),
             ('lifecycle', result['lifecycle']),
-            ('lastMessage', result['lastMessage']),
+            ('createTime', result['createTime']),
+            ('endTIme', result['endTime'])
         ])
 
     return _apply_format(result, _job_ex_table_format)
