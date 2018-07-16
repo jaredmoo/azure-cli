@@ -283,6 +283,26 @@ def _elastic_pool_edition_table_format(editions):
 ###############################################
 
 
+def job_agent_table_format(result):
+    '''
+    Formats a single or list of job agents as summary results for display with "-o table".
+    '''
+
+    def _job_agent_table_format(result):
+        '''
+        Formats a job agent as summary results for display with "-o table".
+        '''
+        from collections import OrderedDict
+
+        return OrderedDict([
+            ('name', result['name']),
+            ('state', result['state']),
+            ('database', _last_segment(result['databaseId']))
+        ])
+
+    return _apply_format(result, _job_agent_table_format)
+
+
 def job_ex_table_format(result):
     '''
     Formats a single or list of job executions as summary results for display with "-o table".
@@ -290,7 +310,7 @@ def job_ex_table_format(result):
 
     def _job_ex_table_format(result):
         '''
-        Formats a server firewall rule as summary results for display with "-o table".
+        Formats a job execution as summary results for display with "-o table".
         '''
         from collections import OrderedDict
 

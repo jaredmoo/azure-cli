@@ -2330,6 +2330,60 @@ class SqlSubscriptionUsagesScenarioTest(ScenarioTest):
                      JMESPathCheckGreaterThan('limit', 0)])
 
 
+class SqlElasticJobScenarioTest(ScenarioTest):
+    @ResourceGroupPreparer(location='centralus')
+    @SqlServerPreparer(location='centralus')
+    @AllowLargeResponse()
+    def test_sql_elastic_jobs(self, resource_group, resource_group_location, server):
+        db = "db1"
+        agent = "agent1"
+
+        # Create db
+        self.cmd('sql db create -g {} -s {} -n {} --service-objective S0'
+                 .format(resource_group, server, db))
+
+        # Create agent
+        self.cmd('sql job agent create -g {} -s {} -d {} -n {}'
+                 .format(resource_group, server, db, agent),
+                 checks=[
+                     JMESPathCheck('name', 'agent'),
+                     JMESPathCheck('state', 'Ready'),
+                     JMESPathCheck('location', resource_group_location)])
+
+        # Update agent by setting tags
+        self.cmd('sql job agent update -g {} -s {} -d {} -n {} --set tags.tag1=value1'
+                 .format(resource_group, server, db, agent),
+                 checks=[
+                     JMESPathCheck('name', 'agent'),
+                     JMESPathCheck('state', 'Ready'),
+                     JMESPathCheck('location', resource_group_location),
+                     JMESPathCheck('tags.key1', 'value1')])
+
+        # Show agent
+        self.cmd('sql job agent show -g {} -s {} -n {}'
+                 .format(resource_group, server, db, agent),
+                 checks=[
+                     JMESPathCheck('name', 'agent'),
+                     JMESPathCheck('state', 'Ready'),
+                     JMESPathCheck('location', resource_group_location)])
+
+        # Show agent with table format
+        self.cmd('sql job agent show -g {} -s {} -n {} -o table'
+                 .format(resource_group, server, db, agent))
+
+        # List agents
+        self.cmd('sql job agent list -g {} -s {}'
+                 .format(resource_group, server, db, agent),
+                 checks=[
+                     JMESPathCheck('length(@)', 1),
+                     JMESPathCheck('[0].name', 'agent'),
+                     JMESPathCheck('[0].state', 'Ready'),
+                     JMESPathCheck('[0].location', resource_group_location)])
+
+        # Delete agent
+        self.cmd('sql job agent delete -g {} -s {} -n {}'
+                 .format(resource_group, server, agent))
+
 class SqlZoneResilienceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(location='centralus')
     @SqlServerPreparer(location='centralus')

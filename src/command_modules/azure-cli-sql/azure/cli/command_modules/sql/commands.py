@@ -15,6 +15,7 @@ from ._format import (
     elastic_pool_table_format,
     elastic_pool_edition_table_format,
     firewall_rule_table_format,
+    job_agent_table_format,
     job_ex_table_format,
     server_table_format,
     usage_table_format,
@@ -72,10 +73,14 @@ def load_command_table(self, _):
         client_factory=get_sql_job_agents_operations)
 
     with self.command_group('sql job agent', job_agents_operations, client_factory=get_sql_job_agents_operations) as g:
-        g.command('list', 'list_by_server')
-        g.command('show', 'get')
-        g.custom_command('create', 'agent_create')
-        g.generic_update_command('update')
+        g.command('list', 'list_by_server',
+                  table_transformer=job_agent_table_format)
+        g.command('show', 'get',
+                  table_transformer=job_agent_table_format)
+        g.custom_command('create', 'agent_create',
+                         table_transformer=job_agent_table_format)
+        g.generic_update_command('update',
+                                 table_transformer=job_agent_table_format)
         g.command('delete', 'delete')
 
     job_credentials_operations = CliCommandType(
