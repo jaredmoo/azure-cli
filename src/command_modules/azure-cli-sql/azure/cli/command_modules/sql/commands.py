@@ -38,6 +38,8 @@ from ._util import (
     get_sql_job_agents_operations,
     get_sql_job_credentials_operations,
     get_sql_job_executions_operations,
+    get_sql_job_step_executions_operations,
+    get_sql_job_target_executions_operations,
     get_sql_job_steps_operations,
     get_sql_job_target_groups_operations,
     get_sql_jobs_operations,
@@ -98,9 +100,25 @@ def load_command_table(self, _):
     with self.command_group('sql job ex', job_executions_operations, client_factory=get_sql_job_executions_operations) as g:
         g.custom_command('list', 'job_ex_list',
                          table_transformer=job_ex_table_format)
-        g.custom_command('show', 'job_ex_show',
-                         table_transformer=job_ex_table_format)
         g.command('cancel', 'cancel')
+
+    job_step_executions_operations = CliCommandType(
+        operations_tmpl='azure.mgmt.sql.operations.job_step_executions_operations#JobStepExecutionsOperations.{}',
+        client_factory=get_sql_job_step_executions_operations)
+
+    with self.command_group('sql job ex', job_step_executions_operations, client_factory=get_sql_job_step_executions_operations) as g:
+        g.command('list-steps', 'list_by_job_execution',
+                  table_transformer=job_ex_table_format)
+        g.command('show-step', 'get')
+
+    job_target_executions_operations = CliCommandType(
+        operations_tmpl='azure.mgmt.sql.operations.job_target_executions_operations#JobTargetExecutionsOperations.{}',
+        client_factory=get_sql_job_target_executions_operations)
+
+    with self.command_group('sql job ex', job_target_executions_operations, client_factory=get_sql_job_target_executions_operations) as g:
+        g.custom_command('list-targets', 'job_ex_target_list',
+                         table_transformer=job_ex_table_format)
+        g.command('show-target', 'get')
 
     jobs_operations = CliCommandType(
         operations_tmpl='azure.mgmt.sql.operations.jobs_operations#JobsOperations.{}',

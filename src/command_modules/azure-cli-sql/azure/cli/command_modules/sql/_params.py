@@ -395,7 +395,25 @@ def load_arguments(self, _):
 
     with self.argument_context('sql job ex') as c:
         c.argument('job_name',
-                   arg_type=job_param_type)
+                   arg_type=job_param_type,
+                   help='Job name.',
+                   # Allow --ids command line argument. id_part=child_name_2 is 3rd name in uri
+                   id_part='child_name_2')
+
+        c.argument('job_execution_id',
+                   options_list=['--job-execution', '-x'],
+                   # Allow --ids command line argument. id_part=child_name_3 is 4th name in uri
+                   id_part='child_name_3')
+
+        c.argument('step_name',
+                   options_list=['--step'],
+                   # Allow --ids command line argument. id_part=child_name_4 is 5th name in uri
+                   id_part='child_name_4')
+
+        c.argument('target_id',
+                   options_list=['--target'],
+                   # Allow --ids command line argument. id_part=child_name_4 is 5th name in uri
+                   id_part='child_name_5')
 
     with self.argument_context('sql job step') as c:
         c.argument('job_name',

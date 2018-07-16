@@ -526,45 +526,56 @@ def job_ex_list(
         resource_group_name,
         job_agent_name,
         job_name=None,
-        job_execution_id=None,
-        step_name=None,
-        top=None):
+        top=None,
+        **kwargs):
+
+    if not top:
+        top = 20
+        logger.warning('Only the most recent {} results will be fetched. '
+                       'You may override this by specifying --top argument.'.format(top))
 
     if job_name:
-        if job_execution_id:
-            if step_name:
-                # List by step
-                large_result = False
-                func = get_sql_job_target_executions_operations(cmd.cli_ctx, None).list_by_job_execution
-            else:
-                # List by job execution
-                large_result = False
-                func = get_sql_job_step_executions_operations(cmd.cli_ctx, None).list_by_job_execution
-        else:
-            if step_name:
-                raise CLIError('In order to specify step name, job execution id must be specified.')
-            # List by job
-            large_result = True
-            func = client.list_by_job
+        # List by job
+        func = client.list_by_job
     else:
-        if job_execution_id or step_name:
-            raise CLIError('In order to specify job execution id and/or step name, job name must be specified.')
-
         # List by agent
-        large_result = True
         func = client.list_by_agent
-
-    if large_result and not top:
-        raise CLIError('Must be limited')  # TODO - better error message
 
     return func(
         server_name=server_name,
         resource_group_name=resource_group_name,
         job_agent_name=job_agent_name,
         job_name=job_name,
-        step_name=step_name,
+        top=top,
+        **kwargs)
+
+
+def job_ex_target_list(
+        cmd,
+        client,
+        server_name,
+        resource_group_name,
+        job_agent_name,
+        job_name,
+        job_execution_id,
+        step_name=None,
+        **kwargs):
+
+    if step_name:
+        # List by step
+        func = client.list_by_step
+    else:
+        # List by job execution
+        func = client.list_by_job_execution
+
+    return func(
+        server_name=server_name,
+        resource_group_name=resource_group_name,
+        job_agent_name=job_agent_name,
+        job_name=job_name,
         job_execution_id=job_execution_id,
-        top=top)
+        step_name=step_name,
+        **kwargs)
 
 
 def job_step_create(
