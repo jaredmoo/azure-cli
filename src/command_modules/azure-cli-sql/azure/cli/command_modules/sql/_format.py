@@ -73,7 +73,7 @@ def _apply_format(result, format_group):
 
 
 ###############################################
-#                sql server                   #
+#                sql                          #
 ###############################################
 
 
@@ -185,6 +185,32 @@ def _db_edition_table_format(editions):
                 ('unit', slo['performanceLevel']['unit']),
                 ('available', is_available(slo['status'])),
             ])
+
+
+def db_op_table_format(result):
+    '''
+    Formats an operation or list of operations as summary results for display with "-o table".
+    '''
+
+    def _db_op_table_format(result):
+        '''
+        Formats a single database operationas summary results for display with "-o table".
+        '''
+        from collections import OrderedDict
+
+        return OrderedDict([
+            ('name', result['name']),
+            ('description', result['description']),
+            ('startTime', result['startTime']),
+            ('estimatedCompletionTime', result['estimatedCompletionTime']),
+            ('state', result['state']),
+            ('percentComplete', result['percentComplete']),
+            ('isCancellable', result['isCancellable']),
+            ('isUserError', result['isUserError']),
+            ('errorDescription', result['errorDescription'])
+        ])
+
+    return _apply_format(result, _db_op_table_format)
 
 
 ###############################################

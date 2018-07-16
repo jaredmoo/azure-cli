@@ -6,14 +6,15 @@
 from azure.cli.core.commands import CliCommandType
 
 from ._format import (
+    db_edition_table_format,
     db_list_transform,
+    db_op_table_format,
     db_transform,
     db_table_format,
-    db_edition_table_format,
+    elastic_pool_edition_table_format,
     elastic_pool_list_transform,
     elastic_pool_transform,
     elastic_pool_table_format,
-    elastic_pool_edition_table_format,
     firewall_rule_table_format,
     server_table_format,
     usage_table_format,
@@ -172,8 +173,10 @@ def load_command_table(self, _):
 
     with self.command_group('sql db op', database_operations_operations) as g:
 
-        g.command('list', 'list_by_database')
-        g.command('cancel', 'cancel')
+        g.command('list', 'list_by_database',
+                  table_transformer=db_op_table_format)
+        g.command('cancel', 'cancel',
+                  table_transformer=db_op_table_format)
 
     transparent_data_encryptions_operations = CliCommandType(
         operations_tmpl='azure.mgmt.sql.operations.transparent_data_encryptions_operations#TransparentDataEncryptionsOperations.{}',
