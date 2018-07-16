@@ -61,7 +61,6 @@ from .custom import (
 
 from ._validators import (
     create_args_for_complex_type,
-    convert_to_resource_id,
     validate_managed_instance_storage_size,
     validate_subnet
 )
