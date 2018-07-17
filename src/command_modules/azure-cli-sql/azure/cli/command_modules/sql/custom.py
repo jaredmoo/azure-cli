@@ -426,6 +426,9 @@ def job_create(
         hours,
         minutes)
 
+    if not schedule:
+        schedule = JobSchedule()
+
     schedule.interval = final_interval.value
     if schedule.interval:
         schedule.type = JobScheduleType.recurring.value
@@ -450,6 +453,7 @@ def job_update(
         enabled=None,
         start_time=None,
         end_time=None,
+        type=None,
         interval=None,
         months=None,
         weeks=None,
@@ -475,6 +479,9 @@ def job_update(
     if end_time:
         instance.schedule.end_time = end_time
 
+    if type:
+        instance.schedule.type = type
+
     final_interval = _generate_interval(
         interval,
         months,
@@ -486,7 +493,7 @@ def job_update(
     if final_interval.value:
         instance.schedule.interval = final_interval.value
 
-    client.create_or_update(
+    return client.create_or_update(
         server_name=server_name,
         resource_group_name=resource_group_name,
         job_agent_name=job_agent_name,

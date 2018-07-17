@@ -2336,11 +2336,14 @@ class SqlElasticJobScenarioTest(ScenarioTest):
     @AllowLargeResponse()
     def test_sql_elastic_jobs(self, resource_group, resource_group_location, server):
         db_name = "db1"
-        agent_name = "agent1"
 
         # Create db
         self.cmd('sql db create -g {} -s {} -n {} --service-objective S0'
                  .format(resource_group, server, db_name))
+
+        ### sql job agent
+
+        agent_name = "agent1"
 
         # Create agent
         self.cmd('sql job agent create -g {} -s {} -d {} -n {}'
@@ -2384,6 +2387,125 @@ class SqlElasticJobScenarioTest(ScenarioTest):
         self.cmd('sql job agent delete -g {} -s {} -n {}'
                  .format(resource_group, server, agent_name))
 
+
+    def test_sql_elastic_jobs2(self):
+        # Temporarily run against precreated job agent in order to iterate faster
+
+        resource_group = "jaredmoopublicpreview"
+        server = "jaredmoopublicpreview"
+        agent_name = "agent1"
+
+        ### sql job
+
+        job_name = 'job1'
+
+        # Create job with default properties
+        self.cmd('sql job create -g {} -s {} -a {} -n {}'
+                 .format(resource_group, server, agent_name, job_name),
+                 checks=[
+                     JMESPathCheck('name', job_name),
+                     JMESPathCheck('description', ''),
+                     JMESPathCheck('schedule.enabled', False),
+                     JMESPathCheck('schedule.endTime', "9999-12-31T11:59:59+00:00"),
+                     JMESPathCheck('schedule.interval', None),
+                     JMESPathCheck('schedule.startTime', "0001-01-01T00:00:00+00:00"),
+                     JMESPathCheck('schedule.type', 'Once'),
+                     JMESPathCheck('version', 0)])
+
+        for command in ['create', 'update']:
+            # Create/update job with minute schedule
+            # Must also set --type Recurring in case we are updating and the schedule type is Once
+            self.cmd('sql job {} -g {} -s {} -a {} -n {} --minutes 7 --type Recurring'
+                    .format(command, resource_group, server, agent_name, job_name),
+                    checks=[
+                        JMESPathCheck('name', job_name),
+                        JMESPathCheck('schedule.interval', 'PT7M'),
+                        JMESPathCheck('schedule.type', 'Recurring')])
+
+            # Create/update job with hours schedule
+            self.cmd('sql job {} -g {} -s {} -a {} -n {} --hours 3'
+                    .format(command, resource_group, server, agent_name, job_name),
+                    checks=[
+                        JMESPathCheck('name', job_name),
+                        JMESPathCheck('schedule.interval', 'PT3H'),
+                        JMESPathCheck('schedule.type', 'Recurring')])
+
+            # Create/update job with days schedule
+            self.cmd('sql job {} -g {} -s {} -a {} -n {} --days 13'
+                    .format(command, resource_group, server, agent_name, job_name),
+                    checks=[
+                        JMESPathCheck('name', job_name),
+                        JMESPathCheck('schedule.interval', 'P1W6D'),
+                        JMESPathCheck('schedule.type', 'Recurring')])
+
+            # Create/update job with weeks schedule
+            self.cmd('sql job {} -g {} -s {} -a {} -n {} --weeks 2'
+                    .format(command, resource_group, server, agent_name, job_name),
+                    checks=[
+                        JMESPathCheck('name', job_name),
+                        JMESPathCheck('schedule.interval', 'P2W'),
+                        JMESPathCheck('schedule.type', 'Recurring')])
+
+            # Create/update job with months schedule
+            self.cmd('sql job {} -g {} -s {} -a {} -n {} --months 5'
+                    .format(command, resource_group, server, agent_name, job_name),
+                    checks=[
+                        JMESPathCheck('name', job_name),
+                        JMESPathCheck('schedule.interval', 'P5M'),
+                        JMESPathCheck('schedule.type', 'Recurring')])
+
+            # Create/update job description
+            self.cmd('sql job {} -g {} -s {} -a {} -n {} --description "My job"'
+                    .format(command, resource_group, server, agent_name, job_name),
+                    checks=[
+                        JMESPathCheck('name', job_name),
+                        JMESPathCheck('description', 'My job')])
+
+        # Delete job
+        self.cmd('sql job delete -g {} -s {} -a {} -n {}'
+                 .format(resource_group, server, agent_name, job_name))
+
+        # Create job with all properties specified and manually specified interval
+        job = self.cmd('sql job create -g {} -s {} -a {} -n {} --interval PT1H30M --enable'
+                 ' --start-time 1950-03-21T01:23:45 --end-time 1985-12-27T18:30:55+00:00'
+                 ' --description "Gregs Job"'
+                 .format(resource_group, server, agent_name, job_name),
+                 checks=[
+                     JMESPathCheck('name', job_name),
+                     JMESPathCheck('description', "Gregs Job"),
+                     JMESPathCheck('schedule.enabled', True),
+                     JMESPathCheck('schedule.endTime', "1985-12-27T18:30:55+00:00"),
+                     JMESPathCheck('schedule.interval', 'PT1H30M'),
+                     JMESPathCheck('schedule.startTime', "1950-03-21T01:23:45+00:00"),
+                     JMESPathCheck('schedule.type', 'Recurring'),
+                     JMESPathCheck('version', 0)]).get_output_in_json()
+
+        # Get job
+        self.cmd('sql job show -g {} -s {} -a {} -n {}'
+                 .format(resource_group, server, agent_name, job_name),
+                 checks=[
+                     JMESPathCheck('name', job_name),
+                     JMESPathCheck('description', "Gregs Job"),
+                     JMESPathCheck('schedule.enabled', True),
+                     JMESPathCheck('schedule.endTime', "1985-12-27T18:30:55+00:00"),
+                     JMESPathCheck('schedule.interval', 'PT1H30M'),
+                     JMESPathCheck('schedule.startTime', "1950-03-21T01:23:45+00:00"),
+                     JMESPathCheck('schedule.type', 'Recurring'),
+                     JMESPathCheck('version', 0)])
+
+        # List jobs
+        self.cmd('sql job list -g {} -s {} -a {}'
+                 .format(resource_group, server, agent_name, job_name),
+                 checks=[
+                     JMESPathCheck('length(@)', 1),
+                     JMESPathCheck('[0].name', job_name),
+                     JMESPathCheck('[0].description', "Gregs Job"),
+                     JMESPathCheck('[0].schedule.enabled', True),
+                     JMESPathCheck('[0].schedule.endTime', "1985-12-27T18:30:55+00:00"),
+                     JMESPathCheck('[0].schedule.interval', 'PT1H30M'),
+                     JMESPathCheck('[0].schedule.startTime', "1950-03-21T01:23:45+00:00"),
+                     JMESPathCheck('[0].schedule.type', 'Recurring'),
+                     JMESPathCheck('[0].version', 0)])
 
 class SqlZoneResilienceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(location='centralus')

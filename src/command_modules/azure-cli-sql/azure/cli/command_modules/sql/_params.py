@@ -36,6 +36,7 @@ from azure.mgmt.sql.models.sql_management_client_enums import (
     DatabaseLicenseType,
     # DatabaseReadScale,
     ElasticPoolLicenseType,
+    JobScheduleType,
     SecurityAlertPolicyState,
     SecurityAlertPolicyEmailAccountAdmins,
     ServerConnectionType,
@@ -336,6 +337,9 @@ def load_arguments(self, _):
                    arg_group=schedule_arg_group)
         c.argument('end_time',
                    arg_group=schedule_arg_group)
+        c.argument('type',
+                   arg_group=schedule_arg_group,
+                   arg_type=get_enum_type(JobScheduleType))
 
         schedule_interval_arg_group = 'Schedule Interval'
 
@@ -363,7 +367,8 @@ def load_arguments(self, _):
         create_args_for_complex_type(c, 'schedule', JobSchedule, [
             'enabled',
             'start_time',
-            'end_time'
+            'end_time',
+            'type'
         ])
 
     with self.argument_context('sql job update') as c:
