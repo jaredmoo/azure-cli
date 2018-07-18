@@ -2613,20 +2613,42 @@ class SqlElasticJobScenarioTest(ScenarioTest):
             '''
             return dict((key, val) for (key, val) in d.items() if val)
 
+        job_agent_id = ('/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1'
+                        '/providers/Microsoft.Sql/servers/server1/jobAgents/agent1')
+
         # SQL DB
-        db = job_target_sql_db_parse('s1.db1')
+        db = job_target_sql_db_parse('srv1.db1')
         self.assertEqual(trim(db.__dict__), dict(
             type='SqlDatabase',
             membership_type='Include',
-            server_name='s1',
+            server_name='srv1',
             database_name='db1'))
 
-        db = job_target_sql_db_parse('~s2.db2')
+        db = job_target_sql_db_parse('~srv2.db2')
         self.assertEqual(trim(db.__dict__), dict(
             type='SqlDatabase',
             membership_type='Exclude',
-            server_name='s2',
+            server_name='srv2',
             database_name='db2'))
+
+        self.assertRaises(CLIError, job_target_sql_db_parse, '')
+        self.assertRaises(CLIError, job_target_sql_db_parse, 'a')
+        self.assertRaises(CLIError, job_target_sql_db_parse, 'a.b.c')
+        self.assertRaises(CLIError, job_target_sql_db_parse, 'a.b/c')
+
+        # SQL Server
+        server = job_target_sql_server_parse(job_agent_id, 'srv1/cr1')
+        self.assertEqual(trim(server.__dict__), dict(
+            type='SqlServer',
+            membership_type='Include',
+            server_name='srv1',
+            refresh_credential=job_agent_id+'/credentials/cr1'))
+
+        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, '')
+        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, 'a')
+        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, 'a.b')
+        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, 'a.b.c')
+        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, '~a/b')
 
 
 class SqlZoneResilienceScenarioTest(ScenarioTest):

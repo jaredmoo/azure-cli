@@ -691,22 +691,25 @@ def job_step_get(
         step_name=step_name)
 
 
-def _parse_optional_membership_type(s):
-    logger.debug('_parse_optional_membership_type: %s', s)
+def _parse_job_target(s):
+    logger.debug('_parse_job_target: %s', s)
+
+    suffix = s
+    (membership_type, suffix) = _parse_membership_type(suffix)
+    (segments, suffix) = _parse_segments(suffix)
+    (credential, suffix) = _parse_credential(suffix)
+
+    logger.debug('_parse_job_target outcome: %s %s %s %s', membership_type, segments, credential, suffix)
+    return (membership_type, segments, credential, suffix)
+
+
+def _parse_membership_type(s):
+    logger.debug('_parse_membership_type: %s', s)
 
     if len(s) > 1 and s[0] == '~':
         return (JobTargetGroupMembershipType.exclude.value, s[1:])
 
     return (JobTargetGroupMembershipType.include.value, s)
-
-
-def _parse_segments_and_credential(s):
-    logger.debug('_parse_segments_and_credential: %s', s)
-
-    suffix = s
-    (segments, suffix) = _parse_segments(suffix)
-    (credential, suffix) = _parse_credential(suffix)
-    return (segments, credential, suffix)
 
 
 def _parse_segments(s):
@@ -739,12 +742,9 @@ def _parse_credential(s):
 def job_target_sql_db_parse(s):
     logger.debug('job_target_sql_db_parse input: %s', s)
 
-    suffix = s
-    (membership_type, suffix) = _parse_optional_membership_type(suffix)
-    (segments, suffix) = _parse_segments(suffix)
+    (membership_type, segments, credential, suffix) = _parse_job_target(s)
 
-    logger.debug('job_target_sql_db_parse outcome: %s %s %s', membership_type, segments, suffix)
-    if len(segments) != 2 or suffix:
+    if len(segments) != 2 or credential or suffix:
         raise CLIError("Invalid database target '{}', expected format 'server_name.database_name' "
                        "(or '~server_name.database_name' to exclude)."
                        .format(s))
@@ -760,17 +760,15 @@ def job_target_sql_db_parse(s):
 def job_target_sql_server_parse(job_agent_id, s):
     logger.debug('job_target_sql_server_parse input: %s', s)
 
-    suffix = s
-    (segments, credential_name, suffix) = _parse_segments_and_credential(suffix)
+    (membership_type, segments, credential, suffix) = _parse_job_target(s)
 
-    logger.debug('job_target_sql_server_parse outcome: %s %s %s', segments, credential_name, suffix)
-    if len(segments) != 1 or not credential_name or suffix:
+    if membership_type != JobTargetGroupMembershipType.include.value or len(segments) != 1 or not credential or suffix:
         raise CLIError("Invalid server target '{}', expected format 'server_name/refresh_credential_name'."
                        .format(s))
 
     t = JobTarget(type=JobTargetType.sql_server.value,
                   server_name=segments[0],
-                  refresh_credential=JobCredentialIdentity(job_agent_id, credential_name).id())
+                  refresh_credential=JobCredentialIdentity(job_agent_id, credential).id())
 
     return t
 
@@ -778,12 +776,9 @@ def job_target_sql_server_parse(job_agent_id, s):
 def job_target_sql_elastic_pool_parse(job_agent_id, s):
     logger.debug('job_target_sql_elastic_pool_parse: %s', s)
 
-    suffix = s
-    (membership_type, suffix) = _parse_optional_membership_type(suffix)
-    (segments, credential_name, suffix) = _parse_segments_and_credential(suffix)
+    (membership_type, segments, credential, suffix) = _parse_job_target(s)
 
-    logger.debug('job_target_sql_elastic_pool_parse outcome: %s %s %s', segments, credential_name, suffix)
-    if len(segments) != 2 or not credential_name or suffix:
+    if len(segments) != 2 or not credential or suffix:
         raise CLIError("Invalid elastic pool '{}', expected format "
                        "'server_name.pool_name/refresh_credential_name' (or "
                        "'~server_name.pool_name/refresh_credential_name' to exclude)."
@@ -793,7 +788,7 @@ def job_target_sql_elastic_pool_parse(job_agent_id, s):
                   membership_type=membership_type,
                   server_name=segments[0],
                   elastic_pool_name=segments[1],
-                  refresh_credential=JobCredentialIdentity(job_agent_id, credential_name).id())
+                  refresh_credential=JobCredentialIdentity(job_agent_id, credential).id())
 
     return t
 
@@ -801,11 +796,9 @@ def job_target_sql_elastic_pool_parse(job_agent_id, s):
 def job_target_sql_shard_map_parse(job_agent_id, s):
     logger.debug('job_target_sql_shard_map_parse: %s', s)
 
-    suffix = s
-    (segments, credential_name, rest) = _parse_segments_and_credential(suffix)
+    (membership_type, segments, credential, suffix) = _parse_job_target(s)
 
-    logger.debug('job_target_sql_shard_map_parse outcome: %s %s %s', segments, credential_name, suffix)
-    if len(segments) != 3 or not credential_name or rest:
+    if membership_type != JobTargetGroupMembershipType.include.value or len(segments) != 3 or not credential or suffix:
         raise CLIError("Invalid shard map target '{}', expected format "
                        "'server_name.database_name.shard_map_name/refresh_credential_name'."
                        .format(s))
@@ -814,7 +807,7 @@ def job_target_sql_shard_map_parse(job_agent_id, s):
                   server_name=segments[0],
                   database_name=segments[1],
                   shard_map_name=segments[2],
-                  refresh_credential=JobCredentialIdentity(job_agent_id, credential_name).id())
+                  refresh_credential=JobCredentialIdentity(job_agent_id, credential).id())
 
     return t
 
