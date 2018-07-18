@@ -1,7 +1,7 @@
 interactions:
 - request:
-    body: '{"properties": {"schedule": {"startTime": "0001-01-01T00:00:00.000Z", "type":
-      "Once", "endTime": "9999-12-31T11:59:59.000Z"}}}'
+    body: '{"properties": {"schedule": {"type": "Once", "endTime": "9999-12-31T11:59:59.000Z",
+      "startTime": "0001-01-01T00:00:00.000Z"}}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -20,7 +20,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['393']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:38 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:32 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -28,10 +28,10 @@ interactions:
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
       x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1196']
+      x-ms-ratelimit-remaining-subscription-writes: ['1195']
     status: {code: 200, message: OK}
 - request:
-    body: '{"properties": {"schedule": {"interval": "PT7M", "type": "Recurring"}}}'
+    body: '{"properties": {"schedule": {"type": "Recurring", "interval": "PT7M"}}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -50,7 +50,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['416']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:38 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:34 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -61,8 +61,8 @@ interactions:
       x-ms-ratelimit-remaining-subscription-writes: ['1196']
     status: {code: 200, message: OK}
 - request:
-    body: '{"properties": {"schedule": {"interval": "PT3H", "startTime": "0001-01-01T00:00:00.000Z",
-      "type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z"}}}'
+    body: '{"properties": {"schedule": {"type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
+      "interval": "PT3H", "startTime": "0001-01-01T00:00:00.000Z"}}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -81,7 +81,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['416']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:40 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:34 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -89,11 +89,11 @@ interactions:
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
       x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1197']
+      x-ms-ratelimit-remaining-subscription-writes: ['1194']
     status: {code: 200, message: OK}
 - request:
-    body: '{"properties": {"schedule": {"interval": "P13D", "startTime": "0001-01-01T00:00:00.000Z",
-      "type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z"}}}'
+    body: '{"properties": {"schedule": {"type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
+      "interval": "P13D", "startTime": "0001-01-01T00:00:00.000Z"}}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -112,7 +112,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['417']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:42 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:36 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -120,11 +120,11 @@ interactions:
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
       x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1197']
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
     status: {code: 200, message: OK}
 - request:
-    body: '{"properties": {"schedule": {"interval": "P2W", "startTime": "0001-01-01T00:00:00.000Z",
-      "type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z"}}}'
+    body: '{"properties": {"schedule": {"type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
+      "interval": "P2W", "startTime": "0001-01-01T00:00:00.000Z"}}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -143,7 +143,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['415']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:43 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:37 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -151,11 +151,11 @@ interactions:
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
       x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1197']
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
     status: {code: 200, message: OK}
 - request:
-    body: '{"properties": {"schedule": {"interval": "P5M", "startTime": "0001-01-01T00:00:00.000Z",
-      "type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z"}}}'
+    body: '{"properties": {"schedule": {"type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
+      "interval": "P5M", "startTime": "0001-01-01T00:00:00.000Z"}}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -174,7 +174,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['415']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:44 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:37 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -182,11 +182,11 @@ interactions:
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
       x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+      x-ms-ratelimit-remaining-subscription-writes: ['1196']
     status: {code: 200, message: OK}
 - request:
-    body: '{"properties": {"description": "My job", "schedule": {"startTime": "0001-01-01T00:00:00.000Z",
-      "type": "Once", "endTime": "9999-12-31T11:59:59.000Z"}}}'
+    body: '{"properties": {"schedule": {"type": "Once", "endTime": "9999-12-31T11:59:59.000Z",
+      "startTime": "0001-01-01T00:00:00.000Z"}, "description": "My job"}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -205,7 +205,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['399']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:45 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:38 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -213,7 +213,7 @@ interactions:
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
       x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
     status: {code: 200, message: OK}
 - request:
     body: null
@@ -234,7 +234,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['399']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:46 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:39 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -244,9 +244,9 @@ interactions:
       x-content-type-options: [nosniff]
     status: {code: 200, message: OK}
 - request:
-    body: '{"properties": {"description": "My job", "schedule": {"interval": "PT7M",
-      "startTime": "0001-01-01T00:00:00.000Z", "type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
-      "enabled": false}}}'
+    body: '{"properties": {"schedule": {"type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
+      "enabled": false, "interval": "PT7M", "startTime": "0001-01-01T00:00:00.000Z"},
+      "description": "My job"}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -265,187 +265,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['422']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:47 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Microsoft-HTTPAPI/2.0]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
-    status: {code: 200, message: OK}
-- request:
-    body: null
-    headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [sql job update]
-      Connection: [keep-alive]
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
-      accept-language: [en-US]
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
-  response:
-    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"PT7M"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
-    headers:
-      cache-control: [no-cache]
-      content-length: ['422']
-      content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:48 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Microsoft-HTTPAPI/2.0]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-    status: {code: 200, message: OK}
-- request:
-    body: '{"properties": {"description": "My job", "schedule": {"interval": "PT3H",
-      "startTime": "0001-01-01T00:00:00.000Z", "type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
-      "enabled": false}}}'
-    headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [sql job update]
-      Connection: [keep-alive]
-      Content-Length: ['194']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
-      accept-language: [en-US]
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
-  response:
-    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"PT3H"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
-    headers:
-      cache-control: [no-cache]
-      content-length: ['422']
-      content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:49 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Microsoft-HTTPAPI/2.0]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
-    status: {code: 200, message: OK}
-- request:
-    body: null
-    headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [sql job update]
-      Connection: [keep-alive]
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
-      accept-language: [en-US]
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
-  response:
-    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"PT3H"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
-    headers:
-      cache-control: [no-cache]
-      content-length: ['422']
-      content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:50 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Microsoft-HTTPAPI/2.0]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-    status: {code: 200, message: OK}
-- request:
-    body: '{"properties": {"description": "My job", "schedule": {"interval": "P13D",
-      "startTime": "0001-01-01T00:00:00.000Z", "type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
-      "enabled": false}}}'
-    headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [sql job update]
-      Connection: [keep-alive]
-      Content-Length: ['194']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
-      accept-language: [en-US]
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
-  response:
-    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P1W6D"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
-    headers:
-      cache-control: [no-cache]
-      content-length: ['423']
-      content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:51 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Microsoft-HTTPAPI/2.0]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
-    status: {code: 200, message: OK}
-- request:
-    body: null
-    headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [sql job update]
-      Connection: [keep-alive]
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
-      accept-language: [en-US]
-    method: GET
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
-  response:
-    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P1W6D"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
-    headers:
-      cache-control: [no-cache]
-      content-length: ['423']
-      content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:58 GMT']
-      expires: ['-1']
-      pragma: [no-cache]
-      server: [Microsoft-HTTPAPI/2.0]
-      strict-transport-security: [max-age=31536000; includeSubDomains]
-      transfer-encoding: [chunked]
-      vary: [Accept-Encoding]
-      x-content-type-options: [nosniff]
-    status: {code: 200, message: OK}
-- request:
-    body: '{"properties": {"description": "My job", "schedule": {"interval": "P2W",
-      "startTime": "0001-01-01T00:00:00.000Z", "type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
-      "enabled": false}}}'
-    headers:
-      Accept: [application/json]
-      Accept-Encoding: ['gzip, deflate']
-      CommandName: [sql job update]
-      Connection: [keep-alive]
-      Content-Length: ['193']
-      Content-Type: [application/json; charset=utf-8]
-      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
-          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
-      accept-language: [en-US]
-    method: PUT
-    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
-  response:
-    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P2W"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
-    headers:
-      cache-control: [no-cache]
-      content-length: ['421']
-      content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:24:59 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:40 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -469,12 +289,12 @@ interactions:
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
   response:
-    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P2W"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
+    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"PT7M"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
     headers:
       cache-control: [no-cache]
-      content-length: ['421']
+      content-length: ['422']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:25:00 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:40 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -484,9 +304,129 @@ interactions:
       x-content-type-options: [nosniff]
     status: {code: 200, message: OK}
 - request:
-    body: '{"properties": {"description": "My job", "schedule": {"interval": "P5M",
-      "startTime": "0001-01-01T00:00:00.000Z", "type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
-      "enabled": false}}}'
+    body: '{"properties": {"schedule": {"type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
+      "enabled": false, "interval": "PT3H", "startTime": "0001-01-01T00:00:00.000Z"},
+      "description": "My job"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job update]
+      Connection: [keep-alive]
+      Content-Length: ['194']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"PT3H"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['422']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:41 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job update]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"PT3H"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['422']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:43 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"schedule": {"type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
+      "enabled": false, "interval": "P13D", "startTime": "0001-01-01T00:00:00.000Z"},
+      "description": "My job"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job update]
+      Connection: [keep-alive]
+      Content-Length: ['194']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P1W6D"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['423']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:44 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job update]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P1W6D"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['423']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:44 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"schedule": {"type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
+      "enabled": false, "interval": "P2W", "startTime": "0001-01-01T00:00:00.000Z"},
+      "description": "My job"}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -500,12 +440,12 @@ interactions:
     method: PUT
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
   response:
-    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P5M"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
+    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P2W"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
     headers:
       cache-control: [no-cache]
       content-length: ['421']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:25:01 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:45 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -529,12 +469,12 @@ interactions:
     method: GET
     uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
   response:
-    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P5M"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
+    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P2W"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
     headers:
       cache-control: [no-cache]
       content-length: ['421']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:25:01 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:45 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -544,9 +484,9 @@ interactions:
       x-content-type-options: [nosniff]
     status: {code: 200, message: OK}
 - request:
-    body: '{"properties": {"description": "My job", "schedule": {"interval": "P5M",
-      "startTime": "0001-01-01T00:00:00.000Z", "type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
-      "enabled": false}}}'
+    body: '{"properties": {"schedule": {"type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
+      "enabled": false, "interval": "P5M", "startTime": "0001-01-01T00:00:00.000Z"},
+      "description": "My job"}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -565,7 +505,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['421']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:25:02 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:46 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -574,6 +514,66 @@ interactions:
       vary: [Accept-Encoding]
       x-content-type-options: [nosniff]
       x-ms-ratelimit-remaining-subscription-writes: ['1199']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job update]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P5M"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['421']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:47 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"schedule": {"type": "Recurring", "endTime": "9999-12-31T11:59:59.000Z",
+      "enabled": false, "interval": "P5M", "startTime": "0001-01-01T00:00:00.000Z"},
+      "description": "My job"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job update]
+      Connection: [keep-alive]
+      Content-Length: ['193']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"description":"My job","version":0,"schedule":{"startTime":"0001-01-01T00:00:00Z","endTime":"9999-12-31T11:59:59Z","type":"Recurring","enabled":false,"interval":"P5M"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['421']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:47 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
     status: {code: 200, message: OK}
 - request:
     body: null
@@ -594,7 +594,7 @@ interactions:
     headers:
       cache-control: [no-cache]
       content-length: ['0']
-      date: ['Tue, 17 Jul 2018 00:25:03 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:48 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -603,9 +603,9 @@ interactions:
       x-ms-ratelimit-remaining-subscription-deletes: ['14999']
     status: {code: 200, message: OK}
 - request:
-    body: '{"properties": {"description": "Gregs Job", "schedule": {"interval": "PT1H30M",
-      "startTime": "1950-03-21T01:23:45.000Z", "type": "Recurring", "endTime": "1985-12-27T18:30:55.000Z",
-      "enabled": true}}}'
+    body: '{"properties": {"schedule": {"type": "Recurring", "endTime": "1985-12-27T18:30:55.000Z",
+      "enabled": true, "interval": "PT1H30M", "startTime": "1950-03-21T01:23:45.000Z"},
+      "description": "Gregs Job"}}'
     headers:
       Accept: [application/json]
       Accept-Encoding: ['gzip, deflate']
@@ -624,13 +624,13 @@ interactions:
       cache-control: [no-cache]
       content-length: ['427']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:25:11 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:49 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
       strict-transport-security: [max-age=31536000; includeSubDomains]
       x-content-type-options: [nosniff]
-      x-ms-ratelimit-remaining-subscription-writes: ['1199']
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
     status: {code: 201, message: Created}
 - request:
     body: null
@@ -651,7 +651,35 @@ interactions:
       cache-control: [no-cache]
       content-length: ['427']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:25:12 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:50 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"description":"Gregs Job","version":0,"schedule":{"startTime":"1950-03-21T01:23:45Z","endTime":"1985-12-27T18:30:55Z","type":"Recurring","enabled":true,"interval":"PT1H30M"}},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1","name":"job1","type":"Microsoft.Sql/servers/jobAgents/jobs"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['427']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:50 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -679,7 +707,7 @@ interactions:
       cache-control: [no-cache]
       content-length: ['439']
       content-type: [application/json; charset=utf-8]
-      date: ['Tue, 17 Jul 2018 00:25:14 GMT']
+      date: ['Wed, 18 Jul 2018 21:51:50 GMT']
       expires: ['-1']
       pragma: [no-cache]
       server: [Microsoft-HTTPAPI/2.0]
@@ -687,5 +715,289 @@ interactions:
       transfer-encoding: [chunked]
       vary: [Accept-Encoding]
       x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"username": "myuser", "password": "mypassword"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job credential create]
+      Connection: [keep-alive]
+      Content-Length: ['64']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"username":"myuser"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1","name":"cred1","type":"Microsoft.Sql/servers/jobAgents/credentials"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['289']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:52 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1198']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job credential update]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"username":"myuser"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1","name":"cred1","type":"Microsoft.Sql/servers/jobAgents/credentials"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['289']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:52 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"username": "myuser", "password": "mypassword2"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job credential update]
+      Connection: [keep-alive]
+      Content-Length: ['65']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"username":"myuser"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1","name":"cred1","type":"Microsoft.Sql/servers/jobAgents/credentials"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['289']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:53 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1195']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job credential update]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"username":"myuser"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1","name":"cred1","type":"Microsoft.Sql/servers/jobAgents/credentials"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['289']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:54 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: '{"properties": {"username": "admin123", "password": "SecretPassword123"}}'
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job credential update]
+      Connection: [keep-alive]
+      Content-Length: ['73']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: PUT
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"username":"admin123"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1","name":"cred1","type":"Microsoft.Sql/servers/jobAgents/credentials"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['291']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:54 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-writes: ['1194']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job credential show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"username":"admin123"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1","name":"cred1","type":"Microsoft.Sql/servers/jobAgents/credentials"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['291']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:55 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job credential show]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"properties":{"username":"admin123"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1","name":"cred1","type":"Microsoft.Sql/servers/jobAgents/credentials"}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['291']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:56 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job credential list]
+      Connection: [keep-alive]
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: GET
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials?api-version=2017-03-01-preview
+  response:
+    body: {string: '{"value":[{"properties":{"username":"admin123"},"id":"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1","name":"cred1","type":"Microsoft.Sql/servers/jobAgents/credentials"}]}'}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['303']
+      content-type: [application/json; charset=utf-8]
+      date: ['Wed, 18 Jul 2018 21:51:57 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      transfer-encoding: [chunked]
+      vary: [Accept-Encoding]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job credential delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/credentials/cred1?api-version=2017-03-01-preview
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Wed, 18 Jul 2018 21:51:58 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-deletes: ['14999']
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: [application/json]
+      Accept-Encoding: ['gzip, deflate']
+      CommandName: [sql job delete]
+      Connection: [keep-alive]
+      Content-Length: ['0']
+      Content-Type: [application/json; charset=utf-8]
+      User-Agent: [python/3.5.3 (Windows-10-10.0.17134-SP0) requests/2.18.4 msrest/0.4.29
+          msrest_azure/0.4.31 azure-mgmt-sql/0.9.1 Azure-SDK-For-Python AZURECLI/2.0.42]
+      accept-language: [en-US]
+    method: DELETE
+    uri: https://management.azure.com/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/jaredmoopublicpreview/providers/Microsoft.Sql/servers/jaredmoopublicpreview/jobAgents/agent1/jobs/job1?api-version=2017-03-01-preview
+  response:
+    body: {string: ''}
+    headers:
+      cache-control: [no-cache]
+      content-length: ['0']
+      date: ['Wed, 18 Jul 2018 21:51:59 GMT']
+      expires: ['-1']
+      pragma: [no-cache]
+      server: [Microsoft-HTTPAPI/2.0]
+      strict-transport-security: [max-age=31536000; includeSubDomains]
+      x-content-type-options: [nosniff]
+      x-ms-ratelimit-remaining-subscription-deletes: ['14999']
     status: {code: 200, message: OK}
 version: 1

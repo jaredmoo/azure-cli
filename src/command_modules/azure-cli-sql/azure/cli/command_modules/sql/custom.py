@@ -517,13 +517,13 @@ def job_credential_update(
         job_agent_name=job_agent_name,
         credential_name=credential_name)
 
-    client.create_or_update(
+    return client.create_or_update(
         server_name=server_name,
         resource_group_name=resource_group_name,
         job_agent_name=job_agent_name,
         credential_name=credential_name,
         username=username or instance.username,
-        schedule=password)
+        password=password)
 
 
 def job_ex_list(

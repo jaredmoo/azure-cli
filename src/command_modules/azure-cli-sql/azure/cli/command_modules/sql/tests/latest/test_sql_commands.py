@@ -36,10 +36,13 @@ server_name_max_length = 63
 managed_instance_name_prefix = 'clitestmi'
 managed_instance_name_max_length = 63
 
+SERVER_ADMIN_USER = 'admin123'
+SERVER_ADMIN_PASSWORD = 'SecretPassword123'
+
 
 class SqlServerPreparer(AbstractPreparer, SingleValueReplacer):
     def __init__(self, name_prefix=server_name_prefix, parameter_name='server', location='westus',
-                 admin_user='admin123', admin_password='SecretPassword123',
+                 admin_user=SERVER_ADMIN_USER, admin_password=SERVER_ADMIN_PASSWORD,
                  resource_group_parameter_name='resource_group', skip_delete=True):
         super(SqlServerPreparer, self).__init__(name_prefix, server_name_max_length)
         self.location = location
@@ -2412,6 +2415,7 @@ class SqlElasticJobScenarioTest(ScenarioTest):
                      JMESPathCheck('schedule.type', 'Once'),
                      JMESPathCheck('version', 0)])
 
+        # Create/update various job properties
         for command in ['create', 'update']:
             # Create/update job with minute schedule
             # Must also set --type Recurring in case we are updating and the schedule type is Once
@@ -2493,9 +2497,22 @@ class SqlElasticJobScenarioTest(ScenarioTest):
                      JMESPathCheck('schedule.type', 'Recurring'),
                      JMESPathCheck('version', 0)])
 
+        # Get job by id
+        self.cmd('sql job show --id {}'
+                 .format(job['id']),
+                 checks=[
+                     JMESPathCheck('name', job_name),
+                     JMESPathCheck('description', "Gregs Job"),
+                     JMESPathCheck('schedule.enabled', True),
+                     JMESPathCheck('schedule.endTime', "1985-12-27T18:30:55+00:00"),
+                     JMESPathCheck('schedule.interval', 'PT1H30M'),
+                     JMESPathCheck('schedule.startTime', "1950-03-21T01:23:45+00:00"),
+                     JMESPathCheck('schedule.type', 'Recurring'),
+                     JMESPathCheck('version', 0)])
+
         # List jobs
         self.cmd('sql job list -g {} -s {} -a {}'
-                 .format(resource_group, server, agent_name, job_name),
+                 .format(resource_group, server, agent_name),
                  checks=[
                      JMESPathCheck('length(@)', 1),
                      JMESPathCheck('[0].name', job_name),
@@ -2506,6 +2523,72 @@ class SqlElasticJobScenarioTest(ScenarioTest):
                      JMESPathCheck('[0].schedule.startTime', "1950-03-21T01:23:45+00:00"),
                      JMESPathCheck('[0].schedule.type', 'Recurring'),
                      JMESPathCheck('[0].version', 0)])
+
+        ### sql job credential
+
+        cred_name = 'cred1'
+        user = 'myuser'
+        password = 'mypassword'
+
+        # Create
+        cred = self.cmd('sql job credential create -g {} -s {} -a {} -n {} -u {} -p {}'
+                        .format(resource_group, server, agent_name, cred_name, user, password),
+                        checks=[
+                            JMESPathCheck('name', cred_name),
+                            JMESPathCheck('username', user),
+                            JMESPathCheck('password', None)]).get_output_in_json()
+
+        # Update password only
+        password = 'mypassword2'
+        self.cmd('sql job credential update -g {} -s {} -a {} -n {} -p {}'
+                 .format(resource_group, server, agent_name, cred_name, password),
+                 checks=[
+                     JMESPathCheck('name', cred_name),
+                     JMESPathCheck('username', user),
+                     JMESPathCheck('password', None)])
+
+        # Update user & password. Set it to the server's admin user & password so we
+        # can use this to run a job later.
+        user = SERVER_ADMIN_USER
+        password = SERVER_ADMIN_PASSWORD
+        self.cmd('sql job credential update -g {} -s {} -a {} -n {} -u {} -p {}'
+                 .format(resource_group, server, agent_name, cred_name, user, password),
+                 checks=[
+                     JMESPathCheck('name', cred_name),
+                     JMESPathCheck('username', user),
+                     JMESPathCheck('password', None)])
+
+        # Get cred
+        self.cmd('sql job credential show -g {} -s {} -a {} -n {}'
+                 .format(resource_group, server, agent_name, cred_name, user, password),
+                 checks=[
+                     JMESPathCheck('name', cred_name),
+                     JMESPathCheck('username', user),
+                     JMESPathCheck('password', None)])
+
+        # Get cred by id
+        self.cmd('sql job credential show --id {}'
+                 .format(cred['id']),
+                 checks=[
+                     JMESPathCheck('name', cred_name),
+                     JMESPathCheck('username', user),
+                     JMESPathCheck('password', None)])
+
+        # List creds
+        self.cmd('sql job credential list -g {} -s {} -a {}'
+                 .format(resource_group, server, agent_name, cred_name, user),
+                 checks=[
+                     JMESPathCheck('length(@)', 1),
+                     JMESPathCheck('[0].name', cred_name),
+                     JMESPathCheck('[0].username', user)])
+
+        # Delete cred
+        self.cmd('sql job credential delete -g {} -s {} -a {} -n {}'
+                 .format(resource_group, server, agent_name, cred_name))
+
+        # Delete job
+        self.cmd('sql job delete -g {} -s {} -a {} -n {}'
+                 .format(resource_group, server, agent_name, job_name))
 
 class SqlZoneResilienceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(location='centralus')
