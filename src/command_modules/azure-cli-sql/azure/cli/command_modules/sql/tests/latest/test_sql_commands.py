@@ -2582,6 +2582,12 @@ class SqlElasticJobScenarioTest(ScenarioTest):
                      JMESPathCheck('[0].name', cred_name),
                      JMESPathCheck('[0].username', user)])
 
+        ### sql job target-group
+
+        target_group_name = 'targetGroup1'
+
+        # Create target group
+
         # Delete cred
         self.cmd('sql job credential delete -g {} -s {} -a {} -n {}'
                  .format(resource_group, server, agent_name, cred_name))
@@ -2589,6 +2595,39 @@ class SqlElasticJobScenarioTest(ScenarioTest):
         # Delete job
         self.cmd('sql job delete -g {} -s {} -a {} -n {}'
                  .format(resource_group, server, agent_name, job_name))
+
+
+    def test_target_parsing(self):
+
+        from azure.cli.command_modules.sql.custom import (
+            job_target_sql_db_parse,
+            job_target_sql_elastic_pool_parse,
+            job_target_sql_server_parse,
+            job_target_sql_shard_map_parse)
+
+        def trim(d):
+            '''
+            Trims a dictionary by removing key/values where the value is falsy.
+            This allows us to compare 2 dict's and not need to explicitly specify
+            all the falsy properties.
+            '''
+            return dict((key, val) for (key, val) in d.items() if val)
+
+        # SQL DB
+        db = job_target_sql_db_parse('s1.db1')
+        self.assertEqual(trim(db.__dict__), dict(
+            type='SqlDatabase',
+            membership_type='Include',
+            server_name='s1',
+            database_name='db1'))
+
+        db = job_target_sql_db_parse('~s2.db2')
+        self.assertEqual(trim(db.__dict__), dict(
+            type='SqlDatabase',
+            membership_type='Exclude',
+            server_name='s2',
+            database_name='db2'))
+
 
 class SqlZoneResilienceScenarioTest(ScenarioTest):
     @ResourceGroupPreparer(location='centralus')

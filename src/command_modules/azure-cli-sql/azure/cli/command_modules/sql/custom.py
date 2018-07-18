@@ -736,14 +736,14 @@ def _parse_credential(s):
     return (prefix, suffix)
 
 
-def _job_target_sql_db_parse(s):
-    logger.debug('_job_target_sql_db_parse input: %s', s)
+def job_target_sql_db_parse(s):
+    logger.debug('job_target_sql_db_parse input: %s', s)
 
     suffix = s
     (membership_type, suffix) = _parse_optional_membership_type(suffix)
     (segments, suffix) = _parse_segments(suffix)
 
-    logger.debug('_job_target_sql_db_parse outcome: %s %s %s', membership_type, segments, suffix)
+    logger.debug('job_target_sql_db_parse outcome: %s %s %s', membership_type, segments, suffix)
     if len(segments) != 2 or suffix:
         raise CLIError("Invalid database target '{}', expected format 'server_name.database_name' "
                        "(or '~server_name.database_name' to exclude)."
@@ -757,13 +757,13 @@ def _job_target_sql_db_parse(s):
     return t
 
 
-def _job_target_sql_server_parse(job_agent_id, s):
-    logger.debug('_job_target_sql_server_parse input: %s', s)
+def job_target_sql_server_parse(job_agent_id, s):
+    logger.debug('job_target_sql_server_parse input: %s', s)
 
     suffix = s
     (segments, credential_name, suffix) = _parse_segments_and_credential(suffix)
 
-    logger.debug('_job_target_sql_server_parse outcome: %s %s %s', segments, credential_name, suffix)
+    logger.debug('job_target_sql_server_parse outcome: %s %s %s', segments, credential_name, suffix)
     if len(segments) != 1 or not credential_name or suffix:
         raise CLIError("Invalid server target '{}', expected format 'server_name/refresh_credential_name'."
                        .format(s))
@@ -775,14 +775,14 @@ def _job_target_sql_server_parse(job_agent_id, s):
     return t
 
 
-def _job_target_sql_elastic_pool_parse(job_agent_id, s):
-    logger.debug('_job_target_sql_elastic_pool_parse: %s', s)
+def job_target_sql_elastic_pool_parse(job_agent_id, s):
+    logger.debug('job_target_sql_elastic_pool_parse: %s', s)
 
     suffix = s
     (membership_type, suffix) = _parse_optional_membership_type(suffix)
     (segments, credential_name, suffix) = _parse_segments_and_credential(suffix)
 
-    logger.debug('_job_target_sql_elastic_pool_parse outcome: %s %s %s', segments, credential_name, suffix)
+    logger.debug('job_target_sql_elastic_pool_parse outcome: %s %s %s', segments, credential_name, suffix)
     if len(segments) != 2 or not credential_name or suffix:
         raise CLIError("Invalid elastic pool '{}', expected format "
                        "'server_name.pool_name/refresh_credential_name' (or "
@@ -798,13 +798,13 @@ def _job_target_sql_elastic_pool_parse(job_agent_id, s):
     return t
 
 
-def _job_target_sql_shard_map_parse(job_agent_id, s):
-    logger.debug('_job_target_sql_shard_map_parse: %s', s)
+def job_target_sql_shard_map_parse(job_agent_id, s):
+    logger.debug('job_target_sql_shard_map_parse: %s', s)
 
     suffix = s
     (segments, credential_name, rest) = _parse_segments_and_credential(suffix)
 
-    logger.debug('_job_target_sql_shard_map_parse outcome: %s %s %s', segments, credential_name, suffix)
+    logger.debug('job_target_sql_shard_map_parse outcome: %s %s %s', segments, credential_name, suffix)
     if len(segments) != 3 or not credential_name or rest:
         raise CLIError("Invalid shard map target '{}', expected format "
                        "'server_name.database_name.shard_map_name/refresh_credential_name'."
@@ -841,16 +841,16 @@ def job_target_group_create(
     members = []
 
     if target_sql_db:
-        members += [_job_target_sql_db_parse(db) for db in target_sql_db]
+        members += [job_target_sql_db_parse(db) for db in target_sql_db]
 
     if target_sql_server:
-        members += [_job_target_sql_server_parse(job_agent_id, srv) for srv in target_sql_server]
+        members += [job_target_sql_server_parse(job_agent_id, srv) for srv in target_sql_server]
 
     if target_sql_elastic_pool:
-        members += [_job_target_sql_elastic_pool_parse(job_agent_id, pool) for pool in target_sql_elastic_pool]
+        members += [job_target_sql_elastic_pool_parse(job_agent_id, pool) for pool in target_sql_elastic_pool]
 
     if target_sql_shard_map:
-        members += [_job_target_sql_shard_map_parse(job_agent_id, shard_map) for shard_map in target_sql_shard_map]
+        members += [job_target_sql_shard_map_parse(job_agent_id, shard_map) for shard_map in target_sql_shard_map]
 
     return client.create_or_update(
         server_name=server_name,
