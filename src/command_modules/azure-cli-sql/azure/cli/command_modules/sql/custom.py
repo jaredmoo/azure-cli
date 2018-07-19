@@ -706,37 +706,41 @@ def _parse_job_target(s):
 def _parse_membership_type(s):
     logger.debug('_parse_membership_type: %s', s)
 
-    if len(s) > 1 and s[0] == '~':
-        return (JobTargetGroupMembershipType.exclude.value, s[1:])
-
-    return (JobTargetGroupMembershipType.include.value, s)
+    (has_tilde, s) = _parse_consume(s, '~')
+    return (JobTargetGroupMembershipType.exclude.value if has_tilde else JobTargetGroupMembershipType.include.value, s)
 
 
 def _parse_segments(s):
     logger.debug('_parse_segments: %s', s)
 
-    (prefix, _, suffix) = s.partition('/')
-
-    segments = []
-    while prefix:
-        (segment, prefix) = _parse_segment(prefix)
-        segments += [segment]
-
-    return (segments, suffix)
-
-
-def _parse_segment(s):
-    logger.debug('_parse_segment: %s', s)
-
-    (prefix, _, suffix) = s.partition('.')
-    return (prefix, suffix)
+    (prefix, suffix) = _parse_until(s, '/')
+    return (prefix.split('.'), suffix)
 
 
 def _parse_credential(s):
     logger.debug('_parse_credential: %s', s)
 
-    (prefix, _, suffix) = s.partition('/')
-    return (prefix, suffix)
+    (has_slash, s) = _parse_consume(s, '/')
+    if has_slash:
+        return _parse_until(s, '/')
+
+    return (None, s)
+
+
+def _parse_until(s, token):
+    if s:
+        index = s.find(token)
+        if index >= 0:
+            return (s[:index], s[index:])
+
+    return (s, None)
+
+
+def _parse_consume(s, token):
+    if s and len(s) > 1 and s[0] == token:
+        return (True, s[1:])
+
+    return (False, s)
 
 
 def job_target_sql_db_parse(s):
@@ -762,11 +766,12 @@ def job_target_sql_server_parse(job_agent_id, s):
 
     (membership_type, segments, credential, suffix) = _parse_job_target(s)
 
-    if membership_type != JobTargetGroupMembershipType.include.value or len(segments) != 1 or not credential or suffix:
+    if len(segments) != 1 or not credential or suffix:
         raise CLIError("Invalid server target '{}', expected format 'server_name/refresh_credential_name'."
                        .format(s))
 
     t = JobTarget(type=JobTargetType.sql_server.value,
+                  membership_type=membership_type,
                   server_name=segments[0],
                   refresh_credential=JobCredentialIdentity(job_agent_id, credential).id())
 
@@ -798,12 +803,13 @@ def job_target_sql_shard_map_parse(job_agent_id, s):
 
     (membership_type, segments, credential, suffix) = _parse_job_target(s)
 
-    if membership_type != JobTargetGroupMembershipType.include.value or len(segments) != 3 or not credential or suffix:
+    if len(segments) != 3 or not credential or suffix:
         raise CLIError("Invalid shard map target '{}', expected format "
                        "'server_name.database_name.shard_map_name/refresh_credential_name'."
                        .format(s))
 
     t = JobTarget(type=JobTargetType.sql_shard_map.value,
+                  membership_type=membership_type,
                   server_name=segments[0],
                   database_name=segments[1],
                   shard_map_name=segments[2],

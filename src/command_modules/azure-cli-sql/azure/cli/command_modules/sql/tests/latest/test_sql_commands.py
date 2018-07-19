@@ -3,6 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+import logging
 import time
 import os
 
@@ -39,6 +40,7 @@ managed_instance_name_max_length = 63
 SERVER_ADMIN_USER = 'admin123'
 SERVER_ADMIN_PASSWORD = 'SecretPassword123'
 
+logger = logging.getLogger('test_sql_commands')
 
 class SqlServerPreparer(AbstractPreparer, SingleValueReplacer):
     def __init__(self, name_prefix=server_name_prefix, parameter_name='server', location='westus',
@@ -2617,6 +2619,8 @@ class SqlElasticJobScenarioTest(ScenarioTest):
                         '/providers/Microsoft.Sql/servers/server1/jobAgents/agent1')
 
         # SQL DB
+
+        # Normal case
         db = job_target_sql_db_parse('srv1.db1')
         self.assertEqual(trim(db.__dict__), dict(
             type='SqlDatabase',
@@ -2624,6 +2628,7 @@ class SqlElasticJobScenarioTest(ScenarioTest):
             server_name='srv1',
             database_name='db1'))
 
+        # Exclude
         db = job_target_sql_db_parse('~srv2.db2')
         self.assertEqual(trim(db.__dict__), dict(
             type='SqlDatabase',
@@ -2631,12 +2636,30 @@ class SqlElasticJobScenarioTest(ScenarioTest):
             server_name='srv2',
             database_name='db2'))
 
-        self.assertRaises(CLIError, job_target_sql_db_parse, '')
-        self.assertRaises(CLIError, job_target_sql_db_parse, 'a')
-        self.assertRaises(CLIError, job_target_sql_db_parse, 'a.b.c')
-        self.assertRaises(CLIError, job_target_sql_db_parse, 'a.b/c')
+        # Negative - any number of segments other than 2
+        for i in range(1, 5):
+            text = '.'.join(['a'] * i)
+            print('job_target_sql_db_parse ', text)
+            if i == 2:
+                job_target_sql_db_parse(text)
+            else:
+                self.assertRaises(CLIError, job_target_sql_db_parse, text)
+
+        # Negative - any number of segments with credential specified
+        for i in range(1, 5):
+            text = '.'.join(['a'] * i)+ '/c'
+            print('job_target_sql_db_parse ', text)
+            self.assertRaises(CLIError, job_target_sql_db_parse, text)
+
+        # Negative - any number of segments with trailing slash
+        for i in range(1, 5):
+            text = '.'.join(['a'] * i)+ '/'
+            print('job_target_sql_db_parse ', text)
+            self.assertRaises(CLIError, job_target_sql_db_parse, text)
 
         # SQL Server
+
+        # Included
         server = job_target_sql_server_parse(job_agent_id, 'srv1/cr1')
         self.assertEqual(trim(server.__dict__), dict(
             type='SqlServer',
@@ -2644,11 +2667,28 @@ class SqlElasticJobScenarioTest(ScenarioTest):
             server_name='srv1',
             refresh_credential=job_agent_id+'/credentials/cr1'))
 
-        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, '')
-        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, 'a')
-        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, 'a.b')
-        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, 'a.b.c')
-        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, '~a/b')
+        # Excluded (parse succeeds, but PUT API will fail)
+        server = job_target_sql_server_parse(job_agent_id, '~srv1/cr1')
+        self.assertEqual(trim(server.__dict__), dict(
+            type='SqlServer',
+            membership_type='Exclude',
+            server_name='srv1',
+            refresh_credential=job_agent_id+'/credentials/cr1'))
+
+        # Negative - no credential
+        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, 'srv')
+
+        # Negative - empty credential
+        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, 'srv/')
+
+        # Negative - any number of segments other than 1
+        for i in range(1, 5):
+            text = '.'.join(['a'] * i) + '/cr1'
+            print('job_target_sql_server_parse ', text)
+            if i == 1:
+                job_target_sql_server_parse(job_agent_id, text)
+            else:
+                self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, text)
 
 
 class SqlZoneResilienceScenarioTest(ScenarioTest):
