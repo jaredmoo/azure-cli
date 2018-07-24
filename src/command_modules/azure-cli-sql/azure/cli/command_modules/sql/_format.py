@@ -321,14 +321,15 @@ def job_ex_table_format(result):
 
         return OrderedDict([
             ('jobName', _get_segment(12)),
+            ('createTime', result['createTime']),
+            ('endTIme', result['endTime']),
             ('jobExecutionId', _get_segment(14)),
             ('stepName', _get_segment(16)),
             ('targetId', _get_segment(18)),
             ('targetServerName', result['target']['serverName'] if result['target'] else None),
             ('targetDatabaseName', result['target']['databaseName'] if result['target'] else None),
             ('lifecycle', result['lifecycle']),
-            ('createTime', result['createTime']),
-            ('endTIme', result['endTime'])
+            ('lastMessage', result['lastMessage'])
         ])
 
     return _apply_format(result, _job_ex_table_format)

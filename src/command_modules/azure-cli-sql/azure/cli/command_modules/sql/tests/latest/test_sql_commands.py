@@ -2342,6 +2342,11 @@ class SqlElasticJobScenarioTest(ScenarioTest):
     def test_sql_elastic_jobs(self, resource_group, resource_group_location, server):
         db_name = "db1"
 
+        # Give server firewall access to all azure services
+        self.cmd('sql server firewall-rule create -g {} -s {} -n allowall'
+                 ' --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0'
+                 .format(resource_group, server, db_name))
+
         # Create db
         self.cmd('sql db create -g {} -s {} -n {} --service-objective S0'
                  .format(resource_group, server, db_name))
@@ -2619,6 +2624,36 @@ class SqlElasticJobScenarioTest(ScenarioTest):
                  .format(resource_group, server, agent_name),
                  checks=[JMESPathCheck('length(@)', 1)])
 
+        # Recreate target group
+        self.cmd('sql job target-group create -g {} -s {} -a {} -n {}'
+                 ' --sql-server {}/{}'
+                 .format(resource_group, server, agent_name, target_group_name,
+                         server, cred_name),
+                 checks=[
+                     JMESPathCheck('name', target_group_name),
+                     JMESPathCheck('length(members)', 1)])
+
+        ### sql job step
+
+        step_name = 'step1'
+        action = 'select 1'
+
+        # Create job step
+        job_step = self.cmd(
+            'sql job step create -g {} -s {} -a {} -j {} -n {}'
+            ' --credential {} --text "{}" --target-group {}'
+            .format(resource_group, server, agent_name, job_name,
+                    step_name, cred_name, action, target_group_name)).get_output_in_json()
+
+        ### sql job ex
+        self.cmd(
+            'sql job start -g {} -s {} -a {} -n {}'
+            .format(resource_group, server, agent_name, job_name))
+
+        # Delete job
+        self.cmd('sql job delete -g {} -s {} -a {} -n {}'
+                 .format(resource_group, server, agent_name, job_name))
+
         # Delete target group
         self.cmd('sql job target-group delete -g {} -s {} -a {} -n {}'
                  .format(resource_group, server, agent_name, target_group_name))
@@ -2626,10 +2661,6 @@ class SqlElasticJobScenarioTest(ScenarioTest):
         # Delete cred
         self.cmd('sql job credential delete -g {} -s {} -a {} -n {}'
                  .format(resource_group, server, agent_name, cred_name))
-
-        # Delete job
-        self.cmd('sql job delete -g {} -s {} -a {} -n {}'
-                 .format(resource_group, server, agent_name, job_name))
 
 
     def test_target_parsing(self):
