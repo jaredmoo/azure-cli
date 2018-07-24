@@ -825,10 +825,10 @@ def job_target_group_create(
         resource_group_name,
         job_agent_name,
         target_group_name,
-        target_sql_db=None,
-        target_sql_server=None,
-        target_sql_elastic_pool=None,
-        target_sql_shard_map=None):
+        sql_db=None,
+        sql_server=None,
+        sql_elastic_pool=None,
+        sql_shard_map=None):
 
     job_agent_id = JobAgentIdentity(
         cmd.cli_ctx,
@@ -839,17 +839,17 @@ def job_target_group_create(
 
     members = []
 
-    if target_sql_db:
-        members += [job_target_sql_db_parse(db) for db in target_sql_db]
+    if sql_db:
+        members += [job_target_sql_db_parse(db) for db in sql_db]
 
-    if target_sql_server:
-        members += [job_target_sql_server_parse(job_agent_id, srv) for srv in target_sql_server]
+    if sql_server:
+        members += [job_target_sql_server_parse(job_agent_id, srv) for srv in sql_server]
 
-    if target_sql_elastic_pool:
-        members += [job_target_sql_elastic_pool_parse(job_agent_id, pool) for pool in target_sql_elastic_pool]
+    if sql_elastic_pool:
+        members += [job_target_sql_elastic_pool_parse(job_agent_id, pool) for pool in sql_elastic_pool]
 
-    if target_sql_shard_map:
-        members += [job_target_sql_shard_map_parse(job_agent_id, shard_map) for shard_map in target_sql_shard_map]
+    if sql_shard_map:
+        members += [job_target_sql_shard_map_parse(job_agent_id, shard_map) for shard_map in sql_shard_map]
 
     return client.create_or_update(
         server_name=server_name,

@@ -2562,7 +2562,7 @@ class SqlElasticJobScenarioTest(ScenarioTest):
 
         # Get cred
         self.cmd('sql job credential show -g {} -s {} -a {} -n {}'
-                 .format(resource_group, server, agent_name, cred_name, user, password),
+                 .format(resource_group, server, agent_name, cred_name),
                  checks=[
                      JMESPathCheck('name', cred_name),
                      JMESPathCheck('username', user),
@@ -2578,7 +2578,7 @@ class SqlElasticJobScenarioTest(ScenarioTest):
 
         # List creds
         self.cmd('sql job credential list -g {} -s {} -a {}'
-                 .format(resource_group, server, agent_name, cred_name, user),
+                 .format(resource_group, server, agent_name),
                  checks=[
                      JMESPathCheck('length(@)', 1),
                      JMESPathCheck('[0].name', cred_name),
@@ -2589,6 +2589,39 @@ class SqlElasticJobScenarioTest(ScenarioTest):
         target_group_name = 'targetGroup1'
 
         # Create target group
+        target_group = self.cmd(
+            'sql job target-group create -g {} -s {} -a {} -n {}'
+            ' --sql-server s1/{cred_name} s2/{cred_name}'
+            ' --sql-db s1.db1 ~s2.db3'
+            ' --sql-elastic-pool s1.p1/{cred_name} ~s2.p2/{cred_name}'
+            ' --sql-shard-map s1.db1.sm1/{cred_name} s2.db2.sm2/{cred_name}'
+            .format(resource_group, server, agent_name, target_group_name, cred_name=cred_name),
+            checks=[
+                JMESPathCheck('name', target_group_name),
+                JMESPathCheck('length(members)', 8)]).get_output_in_json()
+        
+        # Get target group
+        self.cmd('sql job target-group show -g {} -s {} -a {} -n {}'
+                 .format(resource_group, server, agent_name, target_group_name),
+                 checks=[
+                     JMESPathCheck('name', target_group_name),
+                     JMESPathCheck('length(members)', 8)])
+
+        # Get target group by id
+        self.cmd('sql job target-group show --id {}'
+                 .format(target_group['id']),
+                 checks=[
+                     JMESPathCheck('name', target_group_name),
+                     JMESPathCheck('length(members)', 8)])
+
+        # List target groups
+        self.cmd('sql job target-group list -g {} -s {} -a {}'
+                 .format(resource_group, server, agent_name),
+                 checks=[JMESPathCheck('length(@)', 1)])
+
+        # Delete target group
+        self.cmd('sql job target-group delete -g {} -s {} -a {} -n {}'
+                 .format(resource_group, server, agent_name, target_group_name))
 
         # Delete cred
         self.cmd('sql job credential delete -g {} -s {} -a {} -n {}'

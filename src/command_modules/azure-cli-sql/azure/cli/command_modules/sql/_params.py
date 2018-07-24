@@ -480,16 +480,26 @@ def load_arguments(self, _):
         c.ignore('members')
 
     with self.argument_context('sql job target-group create') as c:
-        c.argument('target_sql_db',
+        target_arg_group = 'Target'
+
+        c.argument('sql_db',
+                   arg_group=target_arg_group,
+                   help='List of sql db targets, each formattted like `servername.databasename`.',
                    nargs='+')
 
-        c.argument('target_sql_server',
+        c.argument('sql_server',
+                   arg_group=target_arg_group,
+                   help='List of sql server targets, each formattted like `servername/credentialname`.',
                    nargs='+')
 
-        c.argument('target_sql_elastic_pool',
+        c.argument('sql_elastic_pool',
+                   arg_group=target_arg_group,
+                   help='List of sql elastic pool targets, formattted like `servername.poolname/credentialname`.',
                    nargs='+')
 
-        c.argument('target_sql_shard_map',
+        c.argument('sql_shard_map',
+                   arg_group=target_arg_group,
+                   help='List of sql shard map targets, formattted like `servername.databasename.shardmapname/credentialname`.',
                    nargs='+')
 
     ###############################################
