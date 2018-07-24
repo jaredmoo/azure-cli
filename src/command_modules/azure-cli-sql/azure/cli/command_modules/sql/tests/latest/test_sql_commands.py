@@ -2681,6 +2681,12 @@ class SqlElasticJobScenarioTest(ScenarioTest):
         # Negative - empty credential
         self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, 'srv/')
 
+        # Negative - credential ends with slash
+        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, 'srv/cred/')
+
+        # Negative - extra slashed segment
+        self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, 'srv/cred/mystery')
+
         # Negative - any number of segments other than 1
         for i in range(1, 5):
             text = '.'.join(['a'] * i) + '/cr1'
@@ -2689,6 +2695,90 @@ class SqlElasticJobScenarioTest(ScenarioTest):
                 job_target_sql_server_parse(job_agent_id, text)
             else:
                 self.assertRaises(CLIError, job_target_sql_server_parse, job_agent_id, text)
+
+        # SQL Elastic pool
+
+        # Included
+        server = job_target_sql_elastic_pool_parse(job_agent_id, 'srv1.pool1/cr1')
+        self.assertEqual(trim(server.__dict__), dict(
+            type='SqlElasticPool',
+            membership_type='Include',
+            server_name='srv1',
+            elastic_pool_name='pool1',
+            refresh_credential=job_agent_id+'/credentials/cr1'))
+
+        # Excluded
+        server = job_target_sql_elastic_pool_parse(job_agent_id, '~srv1.pool1/cr1')
+        self.assertEqual(trim(server.__dict__), dict(
+            type='SqlElasticPool',
+            membership_type='Exclude',
+            server_name='srv1',
+            elastic_pool_name='pool1',
+            refresh_credential=job_agent_id+'/credentials/cr1'))
+
+        # Negative - no credential
+        self.assertRaises(CLIError, job_target_sql_elastic_pool_parse, job_agent_id, 'srv1.pool1')
+
+        # Negative - empty credential
+        self.assertRaises(CLIError, job_target_sql_elastic_pool_parse, job_agent_id, 'srv1.pool1/')
+
+        # Negative - credential ends with slash
+        self.assertRaises(CLIError, job_target_sql_elastic_pool_parse, job_agent_id, 'srv1.pool1/cred/')
+
+        # Negative - extra slashed segment
+        self.assertRaises(CLIError, job_target_sql_elastic_pool_parse, job_agent_id, 'srv1.pool1/cred/mystery')
+
+        # Negative - any number of segments other than 2
+        for i in range(1, 5):
+            text = '.'.join(['a'] * i) + '/cr1'
+            print('job_target_sql_elastic_pool_parse ', text)
+            if i == 2:
+                job_target_sql_elastic_pool_parse(job_agent_id, text)
+            else:
+                self.assertRaises(CLIError, job_target_sql_elastic_pool_parse, job_agent_id, text)
+
+        # SQL shard map
+
+        # Included
+        server = job_target_sql_shard_map_parse(job_agent_id, 'srv1.db1.sm1/cr1')
+        self.assertEqual(trim(server.__dict__), dict(
+            type='SqlShardMap',
+            membership_type='Include',
+            server_name='srv1',
+            database_name='db1',
+            shard_map_name='sm1',
+            refresh_credential=job_agent_id+'/credentials/cr1'))
+
+        # Excluded (parse succeeds, but PUT API will fail)
+        server = job_target_sql_shard_map_parse(job_agent_id, '~srv1.db1.sm1/cr1')
+        self.assertEqual(trim(server.__dict__), dict(
+            type='SqlShardMap',
+            membership_type='Exclude',
+            server_name='srv1',
+            database_name='db1',
+            shard_map_name='sm1',
+            refresh_credential=job_agent_id+'/credentials/cr1'))
+
+        # Negative - no credential
+        self.assertRaises(CLIError, job_target_sql_shard_map_parse, job_agent_id, 'srv1.db1.sm1')
+
+        # Negative - empty credential
+        self.assertRaises(CLIError, job_target_sql_shard_map_parse, job_agent_id, 'srv1.db1.sm1/')
+
+        # Negative - credential ends with slash
+        self.assertRaises(CLIError, job_target_sql_shard_map_parse, job_agent_id, 'srv1.db1.sm1/cred/')
+
+        # Negative - extra slashed segment
+        self.assertRaises(CLIError, job_target_sql_shard_map_parse, job_agent_id, 'srv1.db1.sm1/cred/mystery')
+
+        # Negative - any number of segments other than 3
+        for i in range(1, 5):
+            text = '.'.join(['a'] * i) + '/cr1'
+            print('job_target_sql_shard_map_parse ', text)
+            if i == 3:
+                job_target_sql_shard_map_parse(job_agent_id, text)
+            else:
+                self.assertRaises(CLIError, job_target_sql_shard_map_parse, job_agent_id, text)
 
 
 class SqlZoneResilienceScenarioTest(ScenarioTest):
